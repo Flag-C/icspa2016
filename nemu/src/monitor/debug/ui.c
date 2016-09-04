@@ -44,7 +44,7 @@ static int cmd_info(char *args);
 
 //static int cmd_p(char *args);
 
-//static int cmd_x(char *args);
+static int cmd_x(char *args);
 
 //static int cmd_w(char *args);
 
@@ -62,7 +62,7 @@ static struct {
 	{ "q", "Exit NEMU", cmd_q},
 	{ "si", "step through", cmd_si},
 	{ "info", "print regInfo or watchPointInfo", cmd_info},
-	//{ "x", "Scan memory", cmd_x},
+	{ "x", "Scan memory", cmd_x},
 	//{ "p", "expression evaluation", cmd_p},
 	//{ "w", "set watchpoint", cmd_w},
 	//{ "d", "delete watchpoint according to the number", cmd_d},
@@ -73,6 +73,32 @@ static struct {
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
 
+static int cmd_x(char * args) {
+	char* arg = strtok(NULL, " ");
+	int n;
+	if (arg == NULL)
+		printf("please input rightly:x N EXPR\n");
+	else if (sscanf(arg, "%d", &n) == -1)
+		printf("please input rightly:x N EXPR\n");
+	else {
+		char *arg1 = strtok(NULL, " ");
+		if (arg == NULL) {
+			printf("please input rightly:x N EXPR\n");
+		}
+		else {
+			uint32_t addressStart;
+			sscanf(arg1, "%x", &addressStart);
+			for (int i = 1; i <= n; i++) {
+				printf("%d. 0x%x : 0x%x\n", i, addressStart, swaddr_read(addressStart, 4) );
+				addressStart += 4;
+			}
+
+
+		}
+	}
+	return 0;
+}
+
 static int cmd_info(char* args) {
 	char* arg = strtok(NULL, " ");
 	if (strcmp(arg, "r") == 0) {
@@ -81,7 +107,7 @@ static int cmd_info(char* args) {
 			printf(" %s : 0x%x\n", regsl[i], cpu.gpr[i]._32);
 		}
 	}
-	else printf("please input right argment");
+	else printf("please input right argment\n");
 	return 0;
 }
 
@@ -92,7 +118,7 @@ static int cmd_si(char* args) {
 		cpu_exec(1);
 	else {
 		if (sscanf(arg, "%d", &n) == -1) {
-			printf("Can't read number");
+			printf("Can't read number\n");
 		}
 		else {
 			cpu_exec(n);
