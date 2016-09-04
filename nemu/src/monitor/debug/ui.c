@@ -40,7 +40,7 @@ static int cmd_help(char *args);
 
 static int cmd_si(char *args);
 
-//static int cmd_info(char *args);
+static int cmd_info(char *args);
 
 //static int cmd_p(char *args);
 
@@ -61,7 +61,7 @@ static struct {
 	{ "c", "Continue the execution of the program", cmd_c},
 	{ "q", "Exit NEMU", cmd_q},
 	{ "si", "step through", cmd_si},
-	//{ "info", "print regInfo or watchPointInfo", cmd_info},
+	{ "info", "print regInfo or watchPointInfo", cmd_info},
 	//{ "x", "Scan memory", cmd_x},
 	//{ "p", "expression evaluation", cmd_p},
 	//{ "w", "set watchpoint", cmd_w},
@@ -72,6 +72,18 @@ static struct {
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
+
+static int cmd_info(char* args) {
+	char* arg = strtok(NULL, " ");
+	if (strcmp(arg, "r") == 0) {
+		int i = R_EAX;
+		for ( ; i < R_EDI; i++) {
+			printf(" %s : 0x%x\n", regsl[i], cpu.gpr[i]._32);
+		}
+	}
+	else printf("please input right argment");
+	return 0;
+}
 
 static int cmd_si(char* args) {
 	char *arg = strtok(NULL, " ");
