@@ -89,7 +89,7 @@ static int cmd_x(char * args) {
 			uint32_t addressStart;
 			sscanf(arg1, "%x", &addressStart);
 			for (int i = 1; i <= n; i++) {
-				printf("%d. 0x%x : 0x%x\n", i, addressStart, swaddr_read(addressStart, 4) );
+				printf("%d.\t0x%x : 0x%x\n", i, addressStart, swaddr_read(addressStart, 4) );
 				addressStart += 4;
 			}
 
