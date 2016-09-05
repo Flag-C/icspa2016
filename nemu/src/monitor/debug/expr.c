@@ -35,7 +35,7 @@ static struct rule {
 	{"&&", AND, 2},
 	{"\\|\\|", OR, 1},
 	{"!=", NEQ, 3},
-	//{"!", "!", 6},
+	{"!", '!', 6},
 	{"\\(", '(', 7},
 	{"\\)", ')', 7},
 };
@@ -117,9 +117,145 @@ static bool make_token(char *e) {
 			printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
 			return false;
 		}
+
+		//check the unarys
+		for (i = 0; i < nr_token; i ++) {
+			if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUM && tokens[i - 1].type != HEX && tokens[i - 1].type != REG && tokens[i - 1].type != ')'))) {
+				tokens[i].type = POINTER;
+				tokens[i].priority = 6;
+			}
+			if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUM && tokens[i - 1].type != HEX && tokens[i - 1].type != REG && tokens[i - 1].type != ')'))) {
+				tokens[i].type = NEG;
+				tokens[i].priority = 6;
+			}
+		}
 	}
 
 	return true;
+}
+
+bool check_parentheses (int l, int r) { //just count the number
+	int i;
+	if (tokens[l].type == '(' && tokens[r].type == ')') {
+		int lc = 0, rc = 0;
+		for (i = l + 1; i < r; i ++) {
+			if (tokens[i].type == '(')lc ++;
+			if (tokens[i].type == ')')rc ++;
+		}
+		if (lc == rc)return true;
+	}
+	return false;
+}
+
+int dominant_operator (int l, int r)
+{
+	int i, j, min = 10, op = r;
+	for (i = r; i >= l; i--)
+	{
+		if ((tokens[i].type == NUM) || (tokens[i].type == HEX) || (tokens[i].type == REG))
+			continue;
+
+		int lcnt = 0;
+		int rcnt = 0;
+		for (j = i - 1; j >= l ; j --)
+		{
+			if (tokens[j].type == '(') lcnt ++;
+			if (tokens[j].type == ')') rcnt ++;
+		}
+		if (lcnt != rcnt) continue;
+
+		if (tokens[i].priority < min)
+		{
+			min = tokens[i].priority;
+			op = i;
+		}
+	}
+	return op;
+}
+
+uint32_t eval(int p, int q) {
+	if (p > q) {
+		Assert(p > q, "Bad expression\n");
+	}
+	else if (p == q) {
+		/* Single token.
+		 * For now this token should be a number.
+		 * Return the value of the number.
+		 */
+		uint32_t num = 0;
+		switch (tokens[p].type) {
+		case NUM: sscanf(tokens[p].str, "%d", &num); break;
+		case HEX: sscanf(tokens[p].str, "%x", &num); break;
+		case REG:
+		{
+			if (strlen(tokens[p].str) == 3) {
+				int i;
+				for (i = R_EAX; i <= R_EDI; i++)
+					if (strcmp(tokens[p].str, regsl[i]) == 0) {
+						num = reg_l(i);
+						break;
+					}
+				if ((i > R_EDI) && (strcmp(tokens[p].str, "eip") == 0))
+					num = cpu.eip;
+			}
+			if (strlen(tokens[p].str) == 2) {
+				if (tokens[q].str[1] == 'x' || tokens[q].str[1] == 'p' || tokens[q].str[1] == 'i') {
+					int i;
+					for (i = R_AX; i <= R_DI; i ++)
+						if (strcmp (tokens[q].str, regsw[i]) == 0) break;
+					num = reg_w(i);
+				}
+			}
+			if (tokens[q].str[1] == 'q' || tokens[q].str[1] == 'h') {
+				int i;
+				for (i = R_AL; i <= R_BH; i ++)
+					if (strcmp (tokens[q].str, regsb[i]) == 0)break;
+				num = reg_b(i);
+			}
+			break;
+		}
+		default: Assert(1, "something happened when read a number or reg");
+		}
+		return num;
+	}
+	else if (check_parentheses(p, q) == true) {
+		/* The expression is surrounded by a matched pair of parentheses.
+		 * If that is the case, just throw away the parentheses.
+		 */
+		return eval(p + 1, q - 1);
+	}
+	else {
+		/* We should do more things here. */
+		int op = dominant_operator(p, q);
+		if (p == op || tokens[op].type == POINTER || tokens[op].type == NEG || tokens[op].type == '!') //calculate unary
+		{
+			uint32_t val = eval(p + 1, q);
+			switch (tokens[p].type)
+			{
+			case POINTER: return swaddr_read(val, 4);
+			case NEG: return -val;
+			case '!': return !val;
+			default: Assert(1, "strange expr");
+			}
+		}
+		//time to binary
+		uint32_t val1 = eval(p, op - 1);
+		uint32_t val2 = eval(op + 1, q);
+		switch (tokens[op].type)
+		{
+		case '+': return val1 + val2;
+		case '-': return val1 - val2;
+		case '*': return val1 * val2;
+		case '/': return val1 / val2;
+		case EQ : return val1 == val2;
+		case NEQ: return val1 != val2;
+		case AND: return val1 && val2;
+		case OR : return val1 || val2;
+		default: Assert(1, "unknown operation");
+		}
+	}
+	Assert(1, "unknown expr");
+	return -1;
 }
 
 uint32_t expr(char *e, bool *success) {
@@ -129,7 +265,7 @@ uint32_t expr(char *e, bool *success) {
 	}
 
 	/* TODO: Insert codes to evaluate the expression. */
-	panic("please implement me");
-	return 0;
+	*success = true;
+	return eval (0, nr_token - 1);
 }
 
