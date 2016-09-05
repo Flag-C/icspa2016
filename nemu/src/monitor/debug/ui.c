@@ -122,6 +122,7 @@ static int cmd_si(char* args) {
 			printf("Can't read number\n");
 		}
 		else {
+			printf("%d\n",n);
 			cpu_exec(n);
 		}
 	}
