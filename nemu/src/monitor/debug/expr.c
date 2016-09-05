@@ -24,6 +24,9 @@ static struct rule {
 
 	{" +",	NOTYPE},				// spaces
 	{"\\+", '+'},					// plus
+	{"\\+",'-'},
+	{"\\+",'*'},
+	{"\\+",'\\'},	
 	{"==", EQ}						// equal
 };
 
