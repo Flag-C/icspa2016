@@ -7,7 +7,7 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ, NEQ, AND, OR, NUM, HEX, REG
+	NOTYPE = 256, EQ, NEQ, AND, OR, NUM, HEX, REG, POINTER, NEG
 
 	/* TODO: Add more token types */
 
@@ -91,9 +91,22 @@ static bool make_token(char *e) {
 				 * to record the token in the array `tokens'. For certain types
 				 * of tokens, some extra actions should be performed.
 				 */
-
+				
 				switch(rules[i].token_type) {
-					default: panic("please implement me");
+                    case NOTYPE: break;
+                    case REGISTER:
+                        token[nr_token].type=rules[i].token_type;
+                        token[nr_token].priority=rules[i].priority;
+                        strncpy(token[nr_token].str,substr_start+1,substr_len-1);
+                        token[nr_token].str[substr_len-1]='\0';
+                        nr_token++;
+                        break;
+                    default: 
+						token[nr_token].type=rules[i].token_type;
+						token[nr_token].priority=rules[i].priority;
+						strncpy(token[nr_token].str,substr_start,substr_len);
+						token[nr_token].str[substr_len]='\0';
+						nr_token++;
 				}
 
 				break;
