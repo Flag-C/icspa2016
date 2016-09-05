@@ -23,21 +23,21 @@ static struct rule {
 	 * Pay attention to the precedence level of different rules.
 	 */
 	//add priority
-	{" +",	NOTYPE,0},				// spaces
-	{"\\b[0-9]+\\b",NUM,0},
-	{"\\b0[xX][0-9a-fA-F]+\\b",HEX,0},
-	{"\\$[a-zA-Z]+",REG,0},
-	{"\\+", '+',4},					// plus
-	{"-",'-',4},
-	{"\\*",'*',5},
-	{"/",'/',5},	
-	{"==", EQ,3},					// equal
-	{"&&",AND,2},
-	{"\\|\\|",OR,1},
-	{"!=",NEQ,3},
-	{"!","!",6},
-	{"\\(",'(',7},
-	{"\\)",')',7},
+	{" +",	NOTYPE, 0},				// spaces
+	{"\\b[0-9]+\\b", NUM, 0},
+	{"\\b0[xX][0-9a-fA-F]+\\b", HEX, 0},
+	{"\\$[a-zA-Z]+", REG, 0},
+	{"\\+", '+', 4},					// plus
+	{"-", '-', 4},
+	{"\\*", '*', 5},
+	{"/", '/', 5},
+	{"==", EQ, 3},					// equal
+	{"&&", AND, 2},
+	{"\\|\\|", OR, 1},
+	{"!=", NEQ, 3},
+	//{"!", "!", 6},
+	{"\\(", '(', 7},
+	{"\\)", ')', 7},
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -52,9 +52,9 @@ void init_regex() {
 	char error_msg[128];
 	int ret;
 
-	for(i = 0; i < NR_REGEX; i ++) {
+	for (i = 0; i < NR_REGEX; i ++) {
 		ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);
-		if(ret != 0) {
+		if (ret != 0) {
 			regerror(ret, &re[i], error_msg, 128);
 			Assert(ret == 0, "regex compilation failed: %s\n%s", error_msg, rules[i].regex);
 		}
@@ -74,13 +74,13 @@ static bool make_token(char *e) {
 	int position = 0;
 	int i;
 	regmatch_t pmatch;
-	
+
 	nr_token = 0;
 
-	while(e[position] != '\0') {
+	while (e[position] != '\0') {
 		/* Try all rules one by one. */
-		for(i = 0; i < NR_REGEX; i ++) {
-			if(regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
+		for (i = 0; i < NR_REGEX; i ++) {
+			if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
 				char *substr_start = e + position;
 				int substr_len = pmatch.rm_eo;
 
@@ -91,39 +91,39 @@ static bool make_token(char *e) {
 				 * to record the token in the array `tokens'. For certain types
 				 * of tokens, some extra actions should be performed.
 				 */
-				
-				switch(rules[i].token_type) {
-                    case NOTYPE: break;
-                    case REGISTER:
-                        token[nr_token].type=rules[i].token_type;
-                        token[nr_token].priority=rules[i].priority;
-                        strncpy(token[nr_token].str,substr_start+1,substr_len-1);
-                        token[nr_token].str[substr_len-1]='\0';
-                        nr_token++;
-                        break;
-                    default: 
-						token[nr_token].type=rules[i].token_type;
-						token[nr_token].priority=rules[i].priority;
-						strncpy(token[nr_token].str,substr_start,substr_len);
-						token[nr_token].str[substr_len]='\0';
-						nr_token++;
+
+				switch (rules[i].token_type) {
+				case NOTYPE: break;
+				case REG:
+					tokens[nr_token].type = rules[i].token_type;
+					tokens[nr_token].priority = rules[i].priority;
+					strncpy(tokens[nr_token].str, substr_start + 1, substr_len - 1);
+					tokens[nr_token].str[substr_len - 1] = '\0';
+					nr_token++;
+					break;
+				default:
+					tokens[nr_token].type = rules[i].token_type;
+					tokens[nr_token].priority = rules[i].priority;
+					strncpy(tokens[nr_token].str, substr_start, substr_len);
+					tokens[nr_token].str[substr_len] = '\0';
+					nr_token++;
 				}
 
 				break;
 			}
 		}
 
-		if(i == NR_REGEX) {
+		if (i == NR_REGEX) {
 			printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
 			return false;
 		}
 	}
 
-	return true; 
+	return true;
 }
 
 uint32_t expr(char *e, bool *success) {
-	if(!make_token(e)) {
+	if (!make_token(e)) {
 		*success = false;
 		return 0;
 	}
