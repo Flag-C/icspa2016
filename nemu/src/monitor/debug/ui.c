@@ -88,7 +88,8 @@ static int cmd_x(char * args) {
 		else {
 			uint32_t addressStart;
 			sscanf(arg1, "%x", &addressStart);
-			for (int i = 1; i <= n; i++) {
+			int i;
+			for (i = 1; i <= n; i++) {
 				printf("%d.\t0x%x : 0x%x\n", i, addressStart, swaddr_read(addressStart, 4) );
 				addressStart += 4;
 			}
