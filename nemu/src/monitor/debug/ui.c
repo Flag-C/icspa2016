@@ -42,7 +42,7 @@ static int cmd_si(char *args);
 
 static int cmd_info(char *args);
 
-//static int cmd_p(char *args);
+static int cmd_p(char *args);
 
 static int cmd_x(char *args);
 
@@ -63,7 +63,7 @@ static struct {
 	{ "si", "step through", cmd_si},
 	{ "info", "print regInfo or watchPointInfo", cmd_info},
 	{ "x", "Scan memory", cmd_x},
-	//{ "p", "expression evaluation", cmd_p},
+	{ "p", "expression evaluation", cmd_p},
 	//{ "w", "set watchpoint", cmd_w},
 	//{ "d", "delete watchpoint according to the number", cmd_d},
 
@@ -72,6 +72,16 @@ static struct {
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
+
+static int cmd_p(char *args) {
+	uint32_t num;
+	bool succ;
+	num = expr(args, &succ);
+	if (succ)
+		printf("0x%x:\t%d\n", num, num);
+	else Assert(1, "print error");
+	return 0;
+}
 
 static int cmd_x(char * args) {
 	char* arg = strtok(NULL, " ");
