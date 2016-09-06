@@ -46,9 +46,9 @@ static int cmd_p(char *args);
 
 static int cmd_x(char *args);
 
-//static int cmd_w(char *args);
+static int cmd_w(char *args);
 
-//static int cmd_d(char *args);
+static int cmd_d(char *args);
 
 //static int cmd_bt(char *args);
 
@@ -64,14 +64,37 @@ static struct {
 	{ "info", "print regInfo or watchPointInfo", cmd_info},
 	{ "x", "Scan memory", cmd_x},
 	{ "p", "expression evaluation", cmd_p},
-	//{ "w", "set watchpoint", cmd_w},
-	//{ "d", "delete watchpoint according to the number", cmd_d},
+	{ "w", "set watchpoint", cmd_w},
+	{ "d", "delete watchpoint according to the number", cmd_d},
 
 	/* TODO: Add more commands */
 
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
+
+static int cmd_d(char *args) {
+	int n;
+	sscanf(args, "%d", &n);
+	del_wp(n);
+	return 0;
+}
+
+static int cmd_w(char *args) {
+	uint32_t num;
+	bool succ;
+	num = expr(args, &succ);
+	if (succ)
+	{
+		WP *wp;
+		wp = new_wp();
+		strcpy(wp->expr, args);
+		wp->val = num;
+		printf("watchpoint %d: %s\n", wp->NO, wp->expr);
+	}
+	else Assert(1, "cannot calculate");
+	return 0;
+}
 
 static int cmd_p(char *args) {
 	uint32_t num;
@@ -118,6 +141,9 @@ static int cmd_info(char* args) {
 		for ( ; i < R_EDI; i++) {
 			printf(" %s : 0x%x\n", regsl[i], cpu.gpr[i]._32);
 		}
+	}
+	else if (strcmp(arg, "w") == 0) {
+		info_wp();
 	}
 	else printf("please input right argment\n");
 	return 0;
