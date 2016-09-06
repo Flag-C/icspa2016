@@ -141,6 +141,7 @@ bool check_parentheses (int l, int r) { //just count the number
 		for (i = l + 1; i < r; i ++) {
 			if (tokens[i].type == '(')lc ++;
 			if (tokens[i].type == ')')rc ++;
+			if (rc > lc) return false; // like (1+2)+(3+4)
 		}
 		if (lc == rc)return true;
 	}
