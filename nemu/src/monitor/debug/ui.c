@@ -97,7 +97,8 @@ static int cmd_x(char * args) {
 		}
 		else {
 			uint32_t addressStart;
-			sscanf(arg1, "%x", &addressStart);
+			bool succ;
+			addressStart = expr(arg1, &succ);
 			int i;
 			for (i = 1; i <= n; i++) {
 				printf("%d.\t0x%x : 0x%x\n", i, addressStart, swaddr_read(addressStart, 4) );
