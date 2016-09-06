@@ -7,7 +7,7 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ, NEQ, AND, OR, NUM, HEX, REG, POINTER, NEG
+	NOTYPE = 256, EQ, NEQ, AND, OR, NUM, HEX, REG, POINTER, NEG, LE, GE
 
 	/* TODO: Add more token types */
 
@@ -37,6 +37,8 @@ static struct rule {
 	{"!=", NEQ, 3},
 	{">", '>', 3},
 	{"<", '<', 3},
+	{">=", GE, 3},
+	{"<=", LE, 3},
 	{"!", '!', 6},
 	{"\\(", '(', 7},
 	{"\\)", ')', 7},
@@ -254,6 +256,10 @@ uint32_t eval(int p, int q) {
 		case NEQ: return val1 != val2;
 		case AND: return val1 && val2;
 		case OR : return val1 || val2;
+		case '<': return val1 < val2;
+		case '>': return val1 > val2;
+		case GE : return val1 >= val2;
+		case LE : return val1 <= val2;
 		default: Assert(1, "unknown operation");
 		}
 	}
