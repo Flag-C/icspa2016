@@ -88,6 +88,7 @@ static int cmd_w(char *args) {
 	{
 		WP *wp;
 		wp = new_wp();
+		Log("newed");
 		strcpy(wp->expr, args);
 		wp->val = num;
 		printf("watchpoint %d: %s\n", wp->NO, wp->expr);
