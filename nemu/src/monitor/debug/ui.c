@@ -125,7 +125,7 @@ static int cmd_x(char * args) {
 			addressStart = expr(arg1, &succ);
 			int i;
 			for (i = 1; i <= n; i++) {
-				printf("%d.\t0x%x : 0x%8x\n", i, addressStart, swaddr_read(addressStart, 4) );
+				printf("%d.\t0x%x : 0x%08x\n", i, addressStart, swaddr_read(addressStart, 4) );
 				addressStart += 4;
 			}
 
