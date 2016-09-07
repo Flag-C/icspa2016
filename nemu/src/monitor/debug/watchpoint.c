@@ -79,7 +79,7 @@ void del_wp(int n) {
 		p = p->next;
 	if (p->NO == n)
 		free_wp(p);
-	else if (p->next->NO == n)
+	else if (p->next!=NULL && p->next->NO == n)
 		free_wp(p->next);
 	else printf("No watchpoint number %d\n", n);
 }
