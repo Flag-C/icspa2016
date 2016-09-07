@@ -71,6 +71,10 @@ void free_wp(WP *wp) {
 void del_wp(int n) {
 	WP *p;
 	p = head;
+    if (p==NULL) {
+        printf("Nothing to delete\n");
+        return;
+    }
 	while (p->NO != n && p->next != NULL)
 		p = p->next;
 	if (p->NO == n)
