@@ -20,7 +20,11 @@ static void init_log() {
 
 static void welcome() {
 	printf("Welcome to NEMU!\nThe executable is %s.\nFor help, type \"help\"\n",
-			exec_file);
+	       exec_file);
+}
+
+static void init_eflags() {
+	cpu.eflags = 2;
 }
 
 void init_monitor(int argc, char *argv[]) {
@@ -86,6 +90,9 @@ void restart() {
 
 	/* Set the initial instruction pointer. */
 	cpu.eip = ENTRY_START;
+
+	/* Set the initial eflags */
+	init_eflags();
 
 	/* Initialize DRAM. */
 	init_ddr3();
