@@ -4,7 +4,7 @@
 
 static void do_execute() {
 	DATA_TYPE result = op_dest->val & op_src->val;
-	int len = (DATA_TYPE << 3) - 1;
+	int len = (DATA_BYTE << 3) - 1;
 	cpu.CF = 0;
 	cpu.OF = 0;
 	cpu.SF = result >> len;
