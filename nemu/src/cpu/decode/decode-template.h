@@ -32,7 +32,8 @@ make_helper(concat(decode_si_, SUFFIX)) {
 	 *
 	op_src->simm = ???
 	 */
-	panic("please implement me");
+	op_src->simm = (DATA_TYPE_S)instr_fetch(eip, DATA_BYTE);
+	//panic("please implement me");
 
 	op_src->val = op_src->simm;
 
@@ -119,8 +120,8 @@ make_helper(concat(decode_i2rm_, SUFFIX)) {
 	return len;
 }
 
-/* XX <- Ib 
- * eXX <- Iv 
+/* XX <- Ib
+ * eXX <- Iv
  */
 make_helper(concat(decode_i2r_, SUFFIX)) {
 	decode_r_internal(eip, op_dest);
@@ -180,8 +181,8 @@ make_helper(concat(decode_rm_imm_, SUFFIX)) {
 }
 
 void concat(write_operand_, SUFFIX) (Operand *op, DATA_TYPE src) {
-	if(op->type == OP_TYPE_REG) { REG(op->reg) = src; }
-	else if(op->type == OP_TYPE_MEM) { swaddr_write(op->addr, op->size, src); }
+	if (op->type == OP_TYPE_REG) { REG(op->reg) = src; }
+	else if (op->type == OP_TYPE_MEM) { swaddr_write(op->addr, op->size, src); }
 	else { assert(0); }
 }
 
