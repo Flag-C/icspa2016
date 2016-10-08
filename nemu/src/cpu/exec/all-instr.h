@@ -8,6 +8,7 @@
 #include "control/pop.h"
 #include "control/je.h"
 #include "control/ret.h"
+#include "control/leave.h"
 
 #include "arith/dec.h"
 #include "arith/inc.h"
