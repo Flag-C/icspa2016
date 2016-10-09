@@ -25,7 +25,12 @@
 #include "control/jp.h"
 #include "control/js.h"
 #include "control/jz.h"
+#include "control/jmp.h"
 
+#include "arith/add.h"
+#include "arith/adc.h"
+#include "arith/sub.h"
+#include "arith/sbb.h"
 #include "arith/dec.h"
 #include "arith/inc.h"
 #include "arith/neg.h"
