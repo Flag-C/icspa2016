@@ -17,7 +17,6 @@
 #include "control/jge.h"
 #include "control/jl.h"
 #include "control/jle.h"
-#include "control/jne.h"
 #include "control/jno.h"
 #include "control/jnp.h"
 #include "control/jns.h"
