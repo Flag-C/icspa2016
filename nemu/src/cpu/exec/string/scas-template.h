@@ -3,7 +3,7 @@
 #define instr scas
 make_helper(concat(scas_, SUFFIX))
 {
-	DATA_TYPE src = MEM_R(REG(R_EDI));
+	DATA_TYPE src = MEM_R(reg_w(R_DI));
 	DATA_TYPE dest = REG(R_EAX);
 
 	DATA_TYPE result = dest - src;
