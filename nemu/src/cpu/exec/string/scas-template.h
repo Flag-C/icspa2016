@@ -3,7 +3,7 @@
 #define instr scas
 make_helper(concat(scas_, SUFFIX))
 {
-	DATA_TYPE src = MEM_R(reg_w(R_DI));
+	DATA_TYPE src = MEM_R(REG(R_DI));
 	DATA_TYPE dest = REG(R_EAX);
 
 	DATA_TYPE result = dest - src;
@@ -28,11 +28,11 @@ make_helper(concat(scas_, SUFFIX))
 
 	if (cpu.DF)
 	{
-		reg_l(R_EDI) -= DATA_BYTE;
+		REG(R_EDI) -= DATA_BYTE;
 	}
 	else
 	{
-		reg_l(R_EDI) += DATA_BYTE;
+		REG(R_EDI) += DATA_BYTE;
 	}
 	print_asm("scas");
 	return 1;
