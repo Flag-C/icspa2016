@@ -4,7 +4,7 @@
 make_helper(concat(lods_, SUFFIX))
 {
 	DATA_TYPE src = MEM_R(reg_l(R_ESI));
-	REG(R_EAX) = src;
+	MEM_W(REG(R_EAX), src);
 	if (cpu.DF)
 	{
 		reg_l(R_ESI) -= DATA_BYTE;
