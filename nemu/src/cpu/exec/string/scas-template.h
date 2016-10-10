@@ -1,7 +1,7 @@
 #include "cpu/exec/template-start.h"
 
 #define instr scas
-make_helper(concat(lods_, SUFFIX))
+make_helper(concat(scas_, SUFFIX))
 {
 	DATA_TYPE src = MEM_R(reg_l(R_EDI));
 	DATA_TYPE dest = REG(R_EAX);
