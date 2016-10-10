@@ -25,7 +25,6 @@ static void do_execute () {
 	else cpu.PF = 0;
 	print_asm_template2();
 }
-}
 
 make_instr_helper(i2a)
 make_instr_helper(i2rm)
