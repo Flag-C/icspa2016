@@ -7,11 +7,11 @@ make_helper(concat(lods_, SUFFIX))
 	REG(R_EAX) = src;
 	if (cpu.DF)
 	{
-		reg_l(R_ESI) -= DATA_BYTE;
+		REG(R_ESI) -= DATA_BYTE;
 	}
 	else
 	{
-		reg_l(R_ESI) += DATA_BYTE;
+		REG(R_ESI) += DATA_BYTE;
 	}
 	print_asm("lods");
 	return 1;
