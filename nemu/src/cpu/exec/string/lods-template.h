@@ -3,15 +3,15 @@
 #define instr lods
 make_helper(concat(lods_, SUFFIX))
 {
-	DATA_TYPE src = MEM_R(reg_l(R_ESI));
+	DATA_TYPE src = MEM_R(reg_l(R_EDI));
 	REG(R_EAX) = src;
 	if (cpu.DF)
 	{
-		reg_l(R_ESI) -= DATA_BYTE;
+		reg_l(R_EDI) -= DATA_BYTE;
 	}
 	else
 	{
-		reg_l(R_ESI) += DATA_BYTE;
+		reg_l(R_EDI) += DATA_BYTE;
 	}
 	print_asm("lods");
 	return 1;
