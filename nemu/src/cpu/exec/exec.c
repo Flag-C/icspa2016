@@ -80,7 +80,7 @@ make_group(group4,
 /* 0xff */
 make_group(group5,
            inc_rm_v, dec_rm_v, inv, inv,
-           jmp_rm_v, inv, inv, inv)
+           jmp_rm_v, inv, push_rm_v, inv)
 
 make_group(group6,
            inv, inv, inv, inv,
@@ -129,7 +129,7 @@ helper_fun opcode_table [256] = {
 	/* 0x80 */	group1_b, group1_v, inv, group1_sx_v,
 	/* 0x84 */	test_r2rm_b, test_r2rm_v, xchg_r2rm_b, xchg_r2rm_v,
 	/* 0x88 */	mov_r2rm_b, mov_r2rm_v, mov_rm2r_b, mov_rm2r_v,
-	/* 0x8c */	inv, lea, inv, inv,
+	/* 0x8c */	inv, lea, inv, pop_rm_v,
 	/* 0x90 */	nop, xchg_a2r_v, xchg_a2r_v, xchg_a2r_v,
 	/* 0x94 */	xchg_a2r_v, xchg_a2r_v, xchg_a2r_v, xchg_a2r_v,
 	/* 0x98 */	inv, cwd_v, inv, inv,
