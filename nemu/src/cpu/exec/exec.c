@@ -64,7 +64,7 @@ make_group(group2_cl_v,
 
 /* 0xf6 */
 make_group(group3_b,
-           test_i2a_b, inv, not_rm_b, neg_rm_b,
+           test_i2rm_b, inv, not_rm_b, neg_rm_b,
            mul_rm_b, imul_rm2a_b, div_rm_b, idiv_rm_b)
 
 /* 0xf7 */
