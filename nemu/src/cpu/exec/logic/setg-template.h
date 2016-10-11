@@ -1,9 +1,8 @@
 #include "cpu/exec/template-start.h"
 
 #define instr setg
-
 static void do_execute() {
-	if (cpu.ZF == 0 || cpu.SF == cpu.OF)
+	if (cpu.ZF == 0 && cpu.SF == cpu.OF)
 		OPERAND_W(op_src, 1);
 	else OPERAND_W(op_src, 0);
 	print_asm_template1();
