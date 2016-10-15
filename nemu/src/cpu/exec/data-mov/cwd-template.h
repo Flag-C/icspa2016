@@ -3,10 +3,15 @@
 #define instr cwd
 
 make_helper(concat(cwd_, SUFFIX)) {
-	DATA_TYPE temp = REG(R_EAX);
-	int len = (DATA_BYTE << 3) - 1;
-	REG(R_EDX) = temp >> len;
-	print_asm("cwd");
+	if ((int)REG(R_EAX) < 0)
+	{
+#if (DATA_BYTE == 2)
+		REG(R_EDX) = 0xffff;
+#else
+		REG(R_EDX) = 0xffffffff;
+#endif
+	}
+	else REG(R_EDX) = 0;
 	return 1;
 }
 
