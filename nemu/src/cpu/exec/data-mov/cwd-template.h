@@ -5,7 +5,7 @@
 make_helper(concat(cwd_, SUFFIX)) {
 	DATA_TYPE temp = REG(R_EAX);
 	int len = (DATA_BYTE << 3) - 1;
-	REG(R_EDX) = temp >> (len + 1);
+	REG(R_EDX) = temp >> len;
 	print_asm("cwd");
 	return 1;
 }
