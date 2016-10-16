@@ -233,6 +233,7 @@ uint32_t eval(int p, int q) {
 				{
 					char name[10000];
 					int len = symtab[i + 1].st_name - symtab[i].st_name - 1;
+					Log("len=%d\n", len);
 					strncpy(name, strtab + symtab[i].st_name, len);
 					name[len] = '\0';
 					if (strcmp(tokens[p].str, name) == 0)
