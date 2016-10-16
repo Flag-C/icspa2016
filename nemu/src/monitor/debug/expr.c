@@ -231,7 +231,7 @@ uint32_t eval(int p, int q) {
 			for (i = 0; i < nr_symtab_entry - 1; i++)
 				if ((symtab[i].st_info & 0xf) == STT_OBJECT)
 				{
-					char name[10000];
+					char name[32];
 					int len = symtab[i + 1].st_name - symtab[i].st_name - 1;
 					Log("len=%d\n", len);
 					strncpy(name, strtab + symtab[i].st_name, len);
@@ -239,6 +239,14 @@ uint32_t eval(int p, int q) {
 					if (strcmp(tokens[p].str, name) == 0)
 						num = symtab[i].st_value;
 				}
+			if ((symtab[i].st_info & 0xf) == STT_OBJECT)
+			{
+				char name[32];
+				strcpy(name, strtab + symtab[i].st_name);
+				strcat(name, "\0");
+				if (strcmp(tokens[p].str, name) == 0)
+					num = symtab[i].st_value;
+			}
 			break;
 		}
 		default: Assert(1, "something happened when read a number or reg");
