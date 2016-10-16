@@ -104,6 +104,8 @@ static int cmd_bt(char *args) {
 		printf("%s", name);
 		now.prev_ebp = swaddr_read(addr, 4);
 		now.ret_addr = swaddr_read(addr + 4, 4);
+		for (i = 0; i < 4; i ++)
+			now.args[i] = swaddr_read(addr + 8 + 4 * i , 4);
 		if (strcmp (name, "main") == 0)printf ("( )\n");
 		else printf ("( %d , %d , %d , %d )\n", now.args[0], now.args[1], now.args[2], now.args[3]);
 		addr = now.prev_ebp;
