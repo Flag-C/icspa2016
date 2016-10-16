@@ -229,7 +229,7 @@ uint32_t eval(int p, int q) {
 		{
 			int i = 0;
 			for (i = 0; i < nr_symtab_entry; i++)
-				if (((symtab[i].st_info & 0xf) == STT_OBJECT))
+				if ((symtab[i].st_info & 0xf) == STT_OBJECT)
 				{
 					char name[256];
 					int len = symtab[i + 1].st_name - symtab[i].st_name - 1;
