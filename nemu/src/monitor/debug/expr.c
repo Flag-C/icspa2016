@@ -228,7 +228,7 @@ uint32_t eval(int p, int q) {
 		case OBJ:
 		{
 			int i = 0;
-			for (i = 0; i < nr_symtab_entry; i++)
+			for (i = 0; i < nr_symtab_entry - 1; i++)
 				if ((symtab[i].st_info & 0xf) == STT_OBJECT)
 				{
 					char name[10000];
