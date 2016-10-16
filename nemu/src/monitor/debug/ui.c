@@ -101,7 +101,7 @@ static int cmd_bt(char *args) {
 				strcat(name, "\0");
 				break;
 			}
-		printf("%s\t", name);
+		printf("%s", name);
 		now.prev_ebp = swaddr_read(addr, 4);
 		now.ret_addr = swaddr_read(addr + 4, 4);
 		if (strcmp (name, "main") == 0)printf ("( )\n");
