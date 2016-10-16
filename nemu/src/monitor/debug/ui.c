@@ -91,7 +91,7 @@ static int cmd_bt(char *args) {
 	{
 		printf("%d 0x%08x in ", count++, now.ret_addr);
 		int i;
-		for (i = 0; i < nr_symtab_entry; i++)
+		for (i = 0; i < nr_symtab_entry - 1; i++)
 			if (symtab[i].st_value <= now.ret_addr
 			        && symtab[i].st_value + symtab[i].st_size >= now.ret_addr
 			        && (symtab[i].st_info & 0xf) == STT_FUNC)
@@ -101,6 +101,14 @@ static int cmd_bt(char *args) {
 				strcat(name, "\0");
 				break;
 			}
+		i = nr_symtab_entry;
+		if (symtab[i].st_value <= now.ret_addr
+		        && symtab[i].st_value + symtab[i].st_size >= now.ret_addr
+		        && (symtab[i].st_info & 0xf) == STT_FUNC)
+		{
+			strcpy (name, strtab + symtab[i].st_name);
+			strcat(name, "\0");
+		}
 		printf("%s", name);
 		now.prev_ebp = swaddr_read(addr, 4);
 		now.ret_addr = swaddr_read(addr + 4, 4);
