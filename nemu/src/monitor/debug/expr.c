@@ -231,11 +231,11 @@ uint32_t eval(int p, int q) {
 			for (i = 0; i < nr_symtab_entry; i++)
 				if ((symtab[i].st_info & 0xf) == STT_OBJECT)
 				{
-					char name[256];
+					char name[256] = {0};
 					int len = symtab[i + 1].st_name - symtab[i].st_name - 1;
 					strncpy(name, strtab + symtab[i].st_name, len);
 					name[len] = '\0';
-					if (strcmp(name, tokens[p].str) == 0)
+					if (strcmp(tokens[p].str, name) == 0)
 						num = symtab[i].st_value;
 				}
 			break;
