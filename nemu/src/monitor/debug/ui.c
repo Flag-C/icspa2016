@@ -7,6 +7,12 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+typedef struct {
+	uint32_t prev_ebp;
+	uint32_t ret_addr;
+	uint32_t args[4];
+} PartOfStackFrame;
+
 void cpu_exec(uint32_t);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -50,7 +56,7 @@ static int cmd_w(char *args);
 
 static int cmd_d(char *args);
 
-//static int cmd_bt(char *args);
+static int cmd_bt(char *args);
 
 static struct {
 	char *name;
@@ -66,12 +72,44 @@ static struct {
 	{ "p", "expression evaluation", cmd_p},
 	{ "w", "set watchpoint", cmd_w},
 	{ "d", "delete watchpoint according to the number", cmd_d},
+	{ "bt", "print the stack frame", cmd_bt}
 
 	/* TODO: Add more commands */
 
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
+
+static int cmd_bt(char *args) {
+	PartOfStackFrame now;
+	int count = 0, len;
+	char name[32];
+	uint32_t addr = reg_l(R_EBP);
+	now.ret_addr = cpu.eip;
+	now.prev_ebp = 0;
+	while (addr > 0)
+	{
+		printf("%d 0x%08x in ", count++, now.ret_addr);
+		int i;
+		for (i = 0; i < nr_symtab_entry; i++)
+			if (symtab[i].st_value <= now.ret_addr
+			        && symtab[i].st_value + symtab[i].st_size >= now.ret_addr
+			        && (symtab[i].st_info & 0xf) == STT_FUNC)
+			{
+				len = symtab[i + 1].st_name - symtab[i].st_name - 1;
+				strncpy (name, strtab + symtab[i].st_name, len);
+				strcat(name, "\0");
+				break;
+			}
+		printf("%s\t", name);
+		now.prev_ebp = swaddr_read(addr, 4);
+		now.ret_addr = swaddr_read(addr + 4, 4);
+		if (strcmp (name, "main") == 0)printf ("( )\n");
+		else printf ("( %d , %d , %d , %d )\n", now.args[0], now.args[1], now.args[2], now.args[3]);
+		addr = now.prev_ebp;
+	}
+	return 0;
+}
 
 static int cmd_d(char *args) {
 	int n;
