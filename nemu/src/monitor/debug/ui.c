@@ -101,12 +101,12 @@ static int cmd_bt(char *args) {
 				strcat(name, "\0");
 				break;
 			}
-		i = nr_symtab_entry;
+		i = nr_symtab_entry - 1;
 		if (symtab[i].st_value <= now.ret_addr
 		        && symtab[i].st_value + symtab[i].st_size >= now.ret_addr
 		        && (symtab[i].st_info & 0xf) == STT_FUNC)
 		{
-			strcpy (name, strtab + symtab[i].st_name);
+			strcpy(name, strtab + symtab[i].st_name);
 			strcat(name, "\0");
 		}
 		printf("%s", name);
