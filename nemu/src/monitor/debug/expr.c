@@ -1,5 +1,5 @@
 #include "nemu.h"
-
+//#include "elf.c"
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
@@ -7,7 +7,7 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ, NEQ, AND, OR, NUM, HEX, REG, POINTER, NEG, LE, GE
+	NOTYPE = 256, EQ, NEQ, AND, OR, NUM, HEX, REG, POINTER, NEG, LE, GE, OBJ
 
 	/* TODO: Add more token types */
 
@@ -27,6 +27,7 @@ static struct rule {
 	{"\\b[0-9]+\\b", NUM, 0},
 	{"\\b0[xX][0-9a-fA-F]+\\b", HEX, 0},
 	{"\\$[a-zA-Z]+", REG, 0},
+	{"\\b[a-zA-Z_0-9]+", OBJ, 0},	//object
 	{"\\+", '+', 4},					// plus
 	{"-", '-', 4},
 	{"\\*", '*', 5},
@@ -124,11 +125,11 @@ static bool make_token(char *e) {
 
 		//check the unarys
 		for (i = 0; i < nr_token; i ++) {
-			if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUM && tokens[i - 1].type != HEX && tokens[i - 1].type != REG && tokens[i - 1].type != ')'))) {
+			if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUM && tokens[i - 1].type != HEX && tokens[i - 1].type != OBJ && tokens[i - 1].type != REG && tokens[i - 1].type != ')'))) {
 				tokens[i].type = POINTER;
 				tokens[i].priority = 6;
 			}
-			if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUM && tokens[i - 1].type != HEX && tokens[i - 1].type != REG && tokens[i - 1].type != ')'))) {
+			if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUM && tokens[i - 1].type != HEX && tokens[i - 1].type != OBJ && tokens[i - 1].type != REG && tokens[i - 1].type != ')'))) {
 				tokens[i].type = NEG;
 				tokens[i].priority = 6;
 			}
@@ -157,7 +158,7 @@ int dominant_operator (int l, int r)
 	int i, j, min = 10, op = r;
 	for (i = r; i >= l; i--)
 	{
-		if ((tokens[i].type == NUM) || (tokens[i].type == HEX) || (tokens[i].type == REG))
+		if ((tokens[i].type == NUM) || (tokens[i].type == HEX) || (tokens[i].type == REG) || (tokens[i].type == OBJ))
 			continue;
 
 		int lcnt = 0;
@@ -217,6 +218,21 @@ uint32_t eval(int p, int q) {
 					if (strcmp (tokens[q].str, regsb[i]) == 0)break;
 				num = reg_b(i);
 			}
+			break;
+		}
+		case OBJ:
+		{
+			int i = 0;
+			for (i = 0; i < nr_symtab_entry; i++)
+				if ((symtab[i].st_info == STT_OBJECT))
+				{
+					char name[256];
+					int len = symtab[i + 1].st_name - symtab[i].st_name - 1;
+					strncpy(name, strtab + symtab[i].st_name, len);
+					name[len] = '\0';
+					if (strcmp(name, tokens[p].str) == 0)
+						num = symtab[i].st_value;
+				}
 			break;
 		}
 		default: Assert(1, "something happened when read a number or reg");

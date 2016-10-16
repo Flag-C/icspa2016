@@ -4,9 +4,9 @@
 
 char *exec_file = NULL;
 
-static char *strtab = NULL;
-static Elf32_Sym *symtab = NULL;
-static int nr_symtab_entry;
+/* static */char *strtab = NULL;
+/* static */Elf32_Sym *symtab = NULL;
+/* static */int nr_symtab_entry;
 
 void load_elf_tables(int argc, char *argv[]) {
 	int ret;
@@ -30,7 +30,7 @@ void load_elf_tables(int argc, char *argv[]) {
 	assert(elf->e_ident[EI_DATA] == ELFDATA2LSB);		// littel-endian
 	assert(elf->e_ident[EI_VERSION] == EV_CURRENT);		// current version
 	assert(elf->e_ident[EI_OSABI] == ELFOSABI_SYSV || 	// UNIX System V ABI
-			elf->e_ident[EI_OSABI] == ELFOSABI_LINUX); 	// UNIX - GNU
+	       elf->e_ident[EI_OSABI] == ELFOSABI_LINUX); 	// UNIX - GNU
 	assert(elf->e_ident[EI_ABIVERSION] == 0);			// should be 0
 	assert(elf->e_type == ET_EXEC);						// executable file
 	assert(elf->e_machine == EM_386);					// Intel 80386 architecture
@@ -53,9 +53,9 @@ void load_elf_tables(int argc, char *argv[]) {
 	assert(ret == 1);
 
 	int i;
-	for(i = 0; i < elf->e_shnum; i ++) {
-		if(sh[i].sh_type == SHT_SYMTAB && 
-				strcmp(shstrtab + sh[i].sh_name, ".symtab") == 0) {
+	for (i = 0; i < elf->e_shnum; i ++) {
+		if (sh[i].sh_type == SHT_SYMTAB &&
+		        strcmp(shstrtab + sh[i].sh_name, ".symtab") == 0) {
 			/* Load symbol table from exec_file */
 			symtab = malloc(sh[i].sh_size);
 			fseek(fp, sh[i].sh_offset, SEEK_SET);
@@ -63,8 +63,8 @@ void load_elf_tables(int argc, char *argv[]) {
 			assert(ret == 1);
 			nr_symtab_entry = sh[i].sh_size / sizeof(symtab[0]);
 		}
-		else if(sh[i].sh_type == SHT_STRTAB && 
-				strcmp(shstrtab + sh[i].sh_name, ".strtab") == 0) {
+		else if (sh[i].sh_type == SHT_STRTAB &&
+		         strcmp(shstrtab + sh[i].sh_name, ".strtab") == 0) {
 			/* Load string table from exec_file */
 			strtab = malloc(sh[i].sh_size);
 			fseek(fp, sh[i].sh_offset, SEEK_SET);
