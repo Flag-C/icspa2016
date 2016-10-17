@@ -236,7 +236,7 @@ uint32_t eval(int p, int q) {
 					//Log("len=%d\n", len);
 					strncpy(name, strtab + symtab[i].st_name, len);
 					name[len] = '\0';
-					if (strcmp(tokens[p].str, name) == 0)
+					if ((strcmp(tokens[p].str, name) == 0)&&(strlen(tokens[p].str)==len))
 						num = symtab[i].st_value;
 				}
 			if ((symtab[i].st_info & 0xf) == STT_OBJECT) //we must consider the last one in the stringtable.
@@ -244,7 +244,7 @@ uint32_t eval(int p, int q) {
 				char name[32];
 				strcpy(name, strtab + symtab[i].st_name);
 				strcat(name, "\0");
-				if (strcmp(tokens[p].str, name) == 0)
+				if ((strcmp(tokens[p].str, name) == 0)&&(strlen(tokens[p].str)==strlen(name)))
 					num = symtab[i].st_value;
 			}
 			break;
