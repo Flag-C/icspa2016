@@ -228,25 +228,12 @@ uint32_t eval(int p, int q) {
 		case OBJ:
 		{
 			int i = 0;
-			for (i = 0; i < nr_symtab_entry - 1; i++)
+			for (i = 0; i < nr_symtab_entry; i++)
 				if ((symtab[i].st_info & 0xf) == STT_OBJECT)
 				{
-					char name[32];
-					int len = symtab[i + 1].st_name - symtab[i].st_name - 1;
-					//Log("len=%d\n", len);
-					strncpy(name, strtab + symtab[i].st_name, len);
-					name[len] = '\0';
-					if ((strcmp(tokens[p].str, name) == 0)&&(strlen(tokens[p].str)==len))
+					if (strcmp(tokens[p].str, strtab + symtab[i].st_name) == 0)
 						num = symtab[i].st_value;
 				}
-			if ((symtab[i].st_info & 0xf) == STT_OBJECT) //we must consider the last one in the stringtable.
-			{
-				char name[32];
-				strcpy(name, strtab + symtab[i].st_name);
-				strcat(name, "\0");
-				if ((strcmp(tokens[p].str, name) == 0)&&(strlen(tokens[p].str)==strlen(name)))
-					num = symtab[i].st_value;
-			}
 			break;
 		}
 		default: Assert(1, "something happened when read a number or reg");
