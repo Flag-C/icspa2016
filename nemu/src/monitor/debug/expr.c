@@ -228,12 +228,17 @@ uint32_t eval(int p, int q) {
 		case OBJ:
 		{
 			int i = 0;
+			bool flag = false;
 			for (i = 0; i < nr_symtab_entry; i++)
 				if ((symtab[i].st_info & 0xf) == STT_OBJECT)
 				{
 					if (strcmp(tokens[p].str, strtab + symtab[i].st_name) == 0)
+					{
 						num = symtab[i].st_value;
+						flag = true;
+					}
 				}
+			if (!flag) printf("no such variable!\n");
 			break;
 		}
 		default: Assert(1, "something happened when read a number or reg");
