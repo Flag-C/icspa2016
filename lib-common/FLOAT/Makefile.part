@@ -3,14 +3,14 @@
 FLOAT_O := $(FLOAT:.a=.o)
 FLOAT_VFPRINTF_O := $(dir $(FLOAT))FLOAT_vfprintf.o
 INC = lib-common
-FLOAT_A_OBJ := $(FLOAT) $(FLOAT_VFPRINTF_O)
+FLOAT_A_OBJ := $(FLOAT_O) $(FLOAT_VFPRINTF_O)
 
 $(FLOAT): $(FLOAT_A_OBJ)
 	ar r $@ $^
 
 # TODO: complete the following rules
 
-$(FLOAT): lib-common/FLOAT/FLOAT.c lib-common/FLOAT.h
+$(FLOAT_O): lib-common/FLOAT/FLOAT.c lib-common/FLOAT.h
 	mkdir -p obj/lib-common/FLOAT
 	gcc -c -m32 -O2 -fno-builtin lib-common/FLOAT/FLOAT.c -I $(INC) -o obj/lib-common/FLOAT/FLOAT.o 
 
