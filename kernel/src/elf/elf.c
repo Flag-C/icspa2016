@@ -31,31 +31,33 @@ uint32_t loader() {
 	elf = (void*)buf;
 
 	/* TODO: fix the magic number with the correct one */
-	const uint32_t elf_magic = 0xBadC0de;
+	const uint32_t elf_magic = 0x464C457F;
 	uint32_t *p_magic = (void *)buf;
 	nemu_assert(*p_magic == elf_magic);
 
 	/* Load each program segment */
-	panic("please implement me");
-	for(; true; ) {
+	//panic("please implement me");
+	int index;
+	for (index = 0; index < elf->e_phnum; index++ ) {
 		/* Scan the program header table, load each segment into memory */
-		if(ph->p_type == PT_LOAD) {
+		ph = (void*)elf->e_phoff + index * elf->e_phentsize;
+		if (ph->p_type == PT_LOAD) {
 
-			/* TODO: read the content of the segment from the ELF file 
+			/* TODO: read the content of the segment from the ELF file
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
-			 
-			 
-			/* TODO: zero the memory region 
+
+			ramdisk_read((void*)ph->p_vaddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
+			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
-
+			memset((void*)ph->p_vaddr + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
 
 #ifdef IA32_PAGE
 			/* Record the program break for future use. */
 			extern uint32_t cur_brk, max_brk;
 			uint32_t new_brk = ph->p_vaddr + ph->p_memsz - 1;
-			if(cur_brk < new_brk) { max_brk = cur_brk = new_brk; }
+			if (cur_brk < new_brk) { max_brk = cur_brk = new_brk; }
 #endif
 		}
 	}
