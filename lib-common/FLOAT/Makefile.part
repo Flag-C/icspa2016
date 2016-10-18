@@ -3,6 +3,7 @@
 FLOAT_O := $(FLOAT:.a=.o)
 FLOAT_VFPRINTF_O := $(dir $(FLOAT))FLOAT_vfprintf.o
 INC = lib-common
+CFLAGS = -m32 -O2 -fno-builtin -fno-stack-protector
 FLOAT_A_OBJ := $(FLOAT_O) $(FLOAT_VFPRINTF_O)
 
 $(FLOAT): $(FLOAT_A_OBJ)
@@ -12,8 +13,8 @@ $(FLOAT): $(FLOAT_A_OBJ)
 
 $(FLOAT_O): lib-common/FLOAT/FLOAT.c lib-common/FLOAT.h
 	mkdir -p obj/lib-common/FLOAT
-	gcc -c -m32 -O2 -fno-builtin lib-common/FLOAT/FLOAT.c -I $(INC) -o obj/lib-common/FLOAT/FLOAT.o 
+	gcc -c $(CFLAGS) lib-common/FLOAT/FLOAT.c -I $(INC) -o obj/lib-common/FLOAT/FLOAT.o 
 
 $(FLOAT_VFPRINTF_O): lib-common/FLOAT/FLOAT_vfprintf.c lib-common/FLOAT.h
-	gcc -c -m32 -O2 -fno-builtin lib-common/FLOAT/FLOAT_vfprintf.c -I $(INC) -o obj/lib-common/FLOAT/FLOAT_vfprintf.o 
+	gcc -c $(CFLAGS) lib-common/FLOAT/FLOAT_vfprintf.c -I $(INC) -o obj/lib-common/FLOAT/FLOAT_vfprintf.o 
 
