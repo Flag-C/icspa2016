@@ -3,7 +3,7 @@
 FLOAT_O := $(FLOAT:.a=.o)
 FLOAT_VFPRINTF_O := $(dir $(FLOAT))FLOAT_vfprintf.o
 INC = lib-common
-CFLAGS = -m32 -O2 -fno-builtin -fno-stack-protector -fno-mudflap
+CFLAGS = -m32 -O2 -fno-builtin -fno-stack-protector -U_FORTIFY_SOURCE
 FLOAT_A_OBJ := $(FLOAT_O) $(FLOAT_VFPRINTF_O)
 
 $(FLOAT): $(FLOAT_A_OBJ)
