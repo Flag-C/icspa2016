@@ -115,7 +115,7 @@ static void modify_vfprintf() {
 			char* add = &_ppfs_setargs + 0x8010b7 - 0x801046;
 			//mprotect((void *)((int)((int*)add) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
 			*add = 0xeb;
-			*(add + 1) = (char)(0x8010e6 - 0x8010b5);
+			*(add + 1) = (char)(0x8010e6 - 0x8010b5 - 1);
 			//*(add + 2) = 0x90;
 			//*(add + 1) = (char)(0x801167 - (char)&_ppfs_setargs);
 			/* TODO: Implement this function to modify the action of preparing
