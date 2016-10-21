@@ -50,7 +50,7 @@ static void modify_vfprintf() {
 	 */
 	int* calladdr = (int*)((void*)&_vfprintf_internal + 0x08048861 - 0x0804855b + 1);
 	//printf("calladdr %x:%x\n", calladdr, *calladdr);
-	//mprotect((void *)((int)((int*)calladdr) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
+	//mprotect((void *)((int)((int*)calladdr - 100) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
 	//int offset = (int)((int)&format_FLOAT - (int)&_fpmaxtostr);
 	//printf("%d\n", offset);
 	*calladdr += (int)((int)&format_FLOAT - (int)&_fpmaxtostr);
@@ -112,8 +112,10 @@ static void modify_vfprintf() {
 		}
 
 		static void modify_ppfs_setargs() {
-			char* add = &_ppfs_setargs + 0x801114 - 0x8010a5;
-			*add = 0x74;
+			//char* add = &_ppfs_setargs + 0x801114 - 0x8010a5;
+			//mprotect((void *)((int)((int*)add) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
+			//*add = 0xeb;
+			//*(add + 1) = 0xe4;
 			/* TODO: Implement this function to modify the action of preparing
 			 * "%f" arguments for _vfprintf_internal() in _ppfs_setargs().
 			 * Below is the code section in _vfprintf_internal() relative to
