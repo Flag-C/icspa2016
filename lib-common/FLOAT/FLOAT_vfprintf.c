@@ -5,6 +5,7 @@
 
 extern int _vfprintf_internal;
 extern int _fpmaxtostr;
+extern char _ppfs_setargs;
 extern int __stdio_fwrite(char *buf, int len, FILE *stream);
 
 __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
@@ -111,6 +112,8 @@ static void modify_vfprintf() {
 		}
 
 		static void modify_ppfs_setargs() {
+			char* add = &_ppfs_setargs + 0x801114 - 0x8010a5;
+			*add = 0x74;
 			/* TODO: Implement this function to modify the action of preparing
 			 * "%f" arguments for _vfprintf_internal() in _ppfs_setargs().
 			 * Below is the code section in _vfprintf_internal() relative to
