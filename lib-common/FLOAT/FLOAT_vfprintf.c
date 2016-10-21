@@ -112,9 +112,9 @@ static void modify_vfprintf() {
 		}
 
 		static void modify_ppfs_setargs() {
-			//char* add = &_ppfs_setargs + 0x801114 - 0x8010a5;
+			char* add = &_ppfs_setargs + 0x010ef - 0x801085;
 			//mprotect((void *)((int)((int*)add) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
-			//*add = 0xeb;
+			*add = 0xeb;
 			//*(add + 1) = (char)(0x801167 - &_ppfs_setargs);
 			/* TODO: Implement this function to modify the action of preparing
 			 * "%f" arguments for _vfprintf_internal() in _ppfs_setargs().
