@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "FLOAT.h"
+#include <sys/mman.h>
 
-extern char _vfprintf_internal;
-extern char _fpmaxtostr;
+extern int _vfprintf_internal;
+extern int _fpmaxtostr;
 extern int __stdio_fwrite(char *buf, int len, FILE *stream);
 
 __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
@@ -26,10 +27,15 @@ static void modify_vfprintf() {
 	 * is the code section in _vfprintf_internal() relative to the
 	 * hijack.
 	 */
-	int i;
-	int* calladdr = (int*)&_vfprintf_internal + 0x08048861 - 0x0804855b + 1;
-	calladdr = (int*)0x00000ed8 + 0x08048140 - 0x0804973e;
-
+	int* calladdr = (int*)((void*)&_vfprintf_internal + 0x08048861 - 0x0804855b + 1);
+	printf("calladdr %x:%x\n", calladdr, *calladdr);
+	mprotect((void *)((int)((int*)calladdr) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
+	int offset = (int)((int)&format_FLOAT - (int)&_fpmaxtostr);
+	printf("%d\n", offset);
+	*calladdr += (int)((int)&format_FLOAT - (int)&_fpmaxtostr);
+	printf("format_FLOAT %x\n", &format_FLOAT);
+	printf("_fpmaxtostr %x\n", &_fpmaxtostr);
+	printf("calladdr %x:%x\n", calladdr, *calladdr);
 
 #if 0
 	else if (ppfs->conv_num <= CONV_A) {  /* floating point */
