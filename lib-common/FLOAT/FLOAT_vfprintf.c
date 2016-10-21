@@ -49,7 +49,7 @@ static void modify_vfprintf() {
 	 */
 	int* calladdr = (int*)((void*)&_vfprintf_internal + 0x08048861 - 0x0804855b + 1);
 	//printf("calladdr %x:%x\n", calladdr, *calladdr);
-	mprotect((void *)((int)((int*)calladdr) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
+	//mprotect((void *)((int)((int*)calladdr) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
 	//int offset = (int)((int)&format_FLOAT - (int)&_fpmaxtostr);
 	//printf("%d\n", offset);
 	*calladdr += (int)((int)&format_FLOAT - (int)&_fpmaxtostr);
