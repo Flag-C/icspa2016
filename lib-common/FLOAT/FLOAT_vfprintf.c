@@ -17,7 +17,27 @@ __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
 	 */
 
 	char buf[80];
-	int len = sprintf(buf, "0x%08x", f);
+	int sign = 1;
+	uint32_t integer, frac;
+	if (f < 0)
+	{
+		sign = -1;
+		f = -f;
+	}
+	integer = f >> 16;
+	frac = 0x0000ffff & f;
+	int i, m = 0;
+	for (i = 1; i <= 6; i++)
+	{
+		m = m * 10 + ((frac * 0xa) >> 16);
+		frac = (frac * 0xa) & 0x0000ffff;
+	}
+	int len;
+	if (sign == -1)
+	{
+		len = sprintf(buf, "-%d.%06d", integer, m);
+	}
+	else len = sprintf(buf, "%d.%06d", integer, m);
 	return __stdio_fwrite(buf, len, stream);
 }
 
@@ -28,15 +48,29 @@ static void modify_vfprintf() {
 	 * hijack.
 	 */
 	int* calladdr = (int*)((void*)&_vfprintf_internal + 0x08048861 - 0x0804855b + 1);
-	printf("calladdr %x:%x\n", calladdr, *calladdr);
+	//printf("calladdr %x:%x\n", calladdr, *calladdr);
 	mprotect((void *)((int)((int*)calladdr) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
-	int offset = (int)((int)&format_FLOAT - (int)&_fpmaxtostr);
-	printf("%d\n", offset);
+	//int offset = (int)((int)&format_FLOAT - (int)&_fpmaxtostr);
+	//printf("%d\n", offset);
 	*calladdr += (int)((int)&format_FLOAT - (int)&_fpmaxtostr);
-	printf("format_FLOAT %x\n", &format_FLOAT);
-	printf("_fpmaxtostr %x\n", &_fpmaxtostr);
-	printf("calladdr %x:%x\n", calladdr, *calladdr);
-
+	//printf("format_FLOAT %x\n", &format_FLOAT);
+	//printf("_fpmaxtostr %x\n", &_fpmaxtostr);
+	//printf("calladdr %x:%x\n", calladdr, *calladdr);
+	char* floataddr = (void*)calladdr - (0x8048e9b - 0x8048e8f);
+	*floataddr = 0x08;
+	floataddr++;
+	*floataddr = 0xff;
+	floataddr++;
+	*floataddr = 0x32;
+	floataddr++;
+	*floataddr = 0x90;
+	floataddr = floataddr - (0x8048e30 - 0x8048e16);
+	int i;
+	for (i = 1; i <= 6; i++)
+	{
+		*floataddr = 0x90;
+		floataddr++;
+	}
 #if 0
 	else if (ppfs->conv_num <= CONV_A) {  /* floating point */
 		ssize_t nf;

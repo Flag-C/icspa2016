@@ -6,7 +6,7 @@ FLOAT F_mul_F(FLOAT a, FLOAT b) {
 	return (FLOAT)ans;
 }
 
-//use subtraction to emulate the division
+//use "shushi" to emulate the division
 FLOAT F_div_F(FLOAT a, FLOAT b) {
 	int s = 1;
 	if (a < 0)
