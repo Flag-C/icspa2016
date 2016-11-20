@@ -168,12 +168,20 @@ void print_cache(swaddr_t addr)
 	Block *block = find(&L1_cache, addr, false, 1);
 	if (block != NULL)
 	{
-		printf("L1 hit\ntag:%x, vaild:%x, data:%s\n", block->tag, block->valid, block->data);
+		printf("L1 hit\ntag:%x, vaild:%x, data:", block->tag, block->valid);
+		int i;
+		for (i = 0; i < 63; i++)
+			printf("%x ", block->data[i]);
+		printf("%x\n", block->data[63]);
 	}
 	block = find(&L2_cache, addr, false, 1);
 	if (block != NULL)
 	{
-		printf("L2 hit\ntag:%x, vaild:%x, data:%s\n", block->tag, block->valid, block->data);
+		printf("L2 hit\ntag:%x, vaild:%x, data:", block->tag, block->valid);
+		int i;
+		for (i = 0; i < 63; i++)
+			printf("%x ", block->data[i]);
+		printf("%x\n", block->data[63]);
 	}
 }
 
