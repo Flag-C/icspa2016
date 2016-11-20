@@ -3,7 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-//#define DEBUG_CACHE
+#define DEBUG_CACHE
 
 static Cache L1_cache;
 static Cache L2_cache;
@@ -27,13 +27,13 @@ static inline uint32_t get_offsets(swaddr_t addr, int offsets)
 static Block* find(struct Cache *this, swaddr_t addr, bool allocate, int cache)
 {
 #ifdef DEBUG_CACHE
-	printf("find addr:%x offsets:%x blocknum:%x\n", addr, this->offsets, this->block_num);
+	Log("find addr:%x offsets:%x blocknum:%x\n", addr, this->offsets, this->block_num);
 #endif
 	uint32_t set_index = get_set_index(addr, this->offsets, this->set_index_bits_size);
 	uint32_t tag = get_tag(addr, this->offsets, this->set_index_bits_size);
 #ifdef DEBUG_CACHE
-	printf("set_index:%x\n", set_index);
-	printf("tag:%x\n", tag);
+	Log("set_index:%x\n", set_index);
+	Log("tag:%x\n", tag);
 #endif
 
 	//searchinging
@@ -42,7 +42,7 @@ static Block* find(struct Cache *this, swaddr_t addr, bool allocate, int cache)
 		if (this->blocks[i].valid && this->blocks[i].tag == tag)
 			return &(this->blocks[i]);
 #ifdef DEBUG_CACHE
-	printf("cachemiss\n");
+	Log("cachemiss\n");
 #endif
 
 	if (allocate)
@@ -55,7 +55,7 @@ static Block* find(struct Cache *this, swaddr_t addr, bool allocate, int cache)
 			Log("l1 miss");
 			swaddr_t victim_addr = (victim->tag << (this->set_index_bits_size + this->offsets))
 			                       + (set_index << (this->offsets));
-			printf("victim addr:%x\n", victim_addr);
+			Log("victim addr:%x\n", victim_addr);
 #endif
 			Block *constitude = L2_cache.find(&L2_cache, addr, true, 2);
 			memcpy(victim->data, constitude->data, this->block_size);
@@ -70,7 +70,7 @@ static Block* find(struct Cache *this, swaddr_t addr, bool allocate, int cache)
 			                       + (set_index << (this->offsets));
 #ifdef DEBUG_CACHE
 			Log("l2 miss");
-			printf("victim addr:%x, vaild:%x, dirty:%x, tag: %x\n", victim_addr, victim->valid, victim->dirty, victim->tag);
+			Log("victim addr:%x, vaild:%x, dirty:%x, tag: %x\n", victim_addr, victim->valid, victim->dirty, victim->tag);
 #endif
 			if (victim->dirty == 1 && victim->valid == 1)
 			{
