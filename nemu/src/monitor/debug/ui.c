@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-
+#define CACHED
 typedef struct {
 	uint32_t prev_ebp;
 	uint32_t ret_addr;
