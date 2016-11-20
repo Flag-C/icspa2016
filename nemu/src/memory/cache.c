@@ -71,14 +71,22 @@ static uint32_t read(struct Cache *this, swaddr_t addr, unsigned int len)
 {
 	Block *block = find(this, addr, true);
 	int offset = get_offsets(addr, this->offsets);
-	uint8_t temp[2 * this->block_size];
-	memcpy(temp, block->data, this->block_size);
-	if (offset + len > this->block_size)
+	uint32_t ret;
+	uint8_t *target = (uint8_t *)&ret;
+	int i = 0;
+	for (i = 0; i < len; i++)
 	{
-		block = find(this, addr + this->block_size, true);
-		memcpy(temp + (this->block_size), block->data, this->block_size);
+		if (offset + i >= this->block_size)
+		{
+			block = find(this, addr + i, true);
+			offset = -i;
+			i--;
+		}
+		else
+			*(target++) = block->data[offset + i];
 	}
-	return unalign_rw(temp + offset, 4);
+	return ret;
+
 }
 
 static void write(struct Cache *this, swaddr_t addr, unsigned int len, uint32_t data, bool allocate)
@@ -96,7 +104,7 @@ static void write(struct Cache *this, swaddr_t addr, unsigned int len, uint32_t 
 			block = find(this, addr + i, allocate);
 			if (block == NULL && !allocate)
 				return;
-			offset -= i;
+			offset = -i;
 			i--;
 		}
 		else
