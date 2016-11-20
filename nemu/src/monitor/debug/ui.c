@@ -15,6 +15,8 @@ typedef struct {
 
 void cpu_exec(uint32_t);
 
+extern void print_cache(swaddr_t addr);
+
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
 	static char *line_read = NULL;
@@ -58,6 +60,9 @@ static int cmd_d(char *args);
 
 static int cmd_bt(char *args);
 
+static int cmd_cache(char *args);
+
+
 static struct {
 	char *name;
 	char *description;
@@ -72,13 +77,24 @@ static struct {
 	{ "p", "expression evaluation", cmd_p},
 	{ "w", "set watchpoint", cmd_w},
 	{ "d", "delete watchpoint according to the number", cmd_d},
-	{ "bt", "print the stack frame", cmd_bt}
-
+	{ "bt", "print the stack frame", cmd_bt},
+	{ "cache", "print the cache of a address", cmd_cache}
 	/* TODO: Add more commands */
 
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
+
+static int cmd_cache(char *args) {
+#ifndef CACHED
+	printf("not cached");
+	return 0;
+#endif
+	swaddr_t addr;
+	sscanf(args, "%d", &addr);
+	print_cache(addr);
+	return 0;
+}
 
 static int cmd_bt(char *args) {
 	PartOfStackFrame now;

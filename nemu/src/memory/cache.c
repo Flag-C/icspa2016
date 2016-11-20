@@ -163,6 +163,20 @@ void L2_write (void *this, swaddr_t addr, size_t len, uint32_t data)
 	return;
 }
 
+void print_cache(swaddr_t addr)
+{
+	Block *block = find(&L1_cache, addr, false, 1);
+	if (block != NULL)
+	{
+		printf("L1 hit\ntag:%x, vaild:%x, data:%s\n", block->tag, block->valid, block->data);
+	}
+	block = find(&L2_cache, addr, false, 1);
+	if (block != NULL)
+	{
+		printf("L2 hit\ntag:%x, vaild:%x, data:%s\n", block->tag, block->valid, block->data);
+	}
+}
+
 void init_cache()
 {
 	L1_cache.size = 128;
