@@ -3,7 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define DEBUG_CACHE
+//#define DEBUG_CACHE
 
 static Cache L1_cache;
 static Cache L2_cache;
