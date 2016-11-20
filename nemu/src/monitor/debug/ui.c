@@ -91,7 +91,8 @@ static int cmd_cache(char *args) {
 	return 0;
 #endif
 	swaddr_t addr;
-	sscanf(args, "%d", &addr);
+	sscanf(args, "%x", &addr);
+	Log("addr: %x\n", addr);
 	print_cache(addr);
 	return 0;
 }
