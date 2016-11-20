@@ -17,7 +17,7 @@ typedef struct Cache {
 	int block_size;
 	int offsets;//Cache_B
 	Block* blocks;
-	Block *(* find)(struct Cache *this, swaddr_t addr, bool allocate);
+	Block *(* find)(struct Cache *this, swaddr_t addr, bool allocate, int cache);
 	uint32_t (* read) (void *this, swaddr_t addr, size_t len);
 	void (* write) (void *this, swaddr_t addr, size_t len, uint32_t data);
 } Cache;

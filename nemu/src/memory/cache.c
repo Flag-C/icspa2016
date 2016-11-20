@@ -6,6 +6,7 @@
 #define DEBUG_CACHE
 
 static Cache L1_cache;
+static Cache L2_cache;
 const void* l1_cache_interface = &L1_cache;
 
 inline uint32_t get_set_index(swaddr_t addr, int offsets, int blocknum)
@@ -23,7 +24,7 @@ inline uint32_t get_offsets(swaddr_t addr, int offsets)
 	return addr & ((1 << offsets) - 1);
 }
 
-static Block* find(struct Cache *this, swaddr_t addr, bool allocate)
+static Block* find(struct Cache *this, swaddr_t addr, bool allocate, int cache)
 {
 	uint32_t set_index = get_set_index(addr, this->offsets, this->block_num);
 	uint32_t tag = get_tag(addr, this->offsets, this->block_num);
@@ -45,31 +46,53 @@ static Block* find(struct Cache *this, swaddr_t addr, bool allocate)
 	if (allocate)
 	{
 		srand(time(0));
-		Block *victim = &(this->blocks[this->block_num * set_index + rand() % this->block_num]);
+		if (cache == 1)
+		{
+			Block *victim = &(this->blocks[this->block_num * set_index + rand() % this->block_num]);
 #ifdef DEBUG_CACHE
-		swaddr_t victim_addr = (victim->tag << (this->bits_size + this->offsets))
-		                       + (set_index << (this->offsets));
-		printf("victim addr:%x\n", victim_addr);
+			Log("l1 miss");
+			swaddr_t victim_addr = (victim->tag << (this->bits_size + this->offsets))
+			                       + (set_index << (this->offsets));
+			printf("victim addr:%x\n", victim_addr);
 #endif
-
-		//read from dram
-		uint32_t mask = (0xffffffff << this->offsets);
-		addr &= mask;
-		int i = 0;
-		for (i = 0; i < this->block_size; i++)
-			victim->data[i] = dram_read(addr++, 1);
-		victim->valid = 1;
-		victim->tag = tag;
-		return victim;
+			Block *constitude = L2_cache.find(&L2_cache, addr, true, 2);
+			memcpy(victim->data, constitude->data, this->block_size);
+			victim->valid = 1;
+			victim->tag = tag;
+			return victim;
+		}
+		else if (cache == 2)
+		{
+			Block *victim = &(this->blocks[this->block_num * set_index + rand() % this->block_num]);
+#ifdef DEBUG_CACHE
+			Log("l2 miss");
+			swaddr_t victim_addr = (victim->tag << (this->bits_size + this->offsets))
+			                       + (set_index << (this->offsets));
+			printf("victim addr:%x, vaild:%x, dirty:%x, tag: %x\n", victim_addr, victim->valid, victim->dirty, victim->tag);
+#endif
+			if (victim->dirty == 1 && victim->valid == 1)
+			{
+				for (i = 0; i < this->block_size; i++)
+					dram_write(victim_addr++, 1, victim->data[i]);
+			}
+			//read from dram
+			uint32_t mask = (0xffffffff << this->offsets);
+			addr &= mask;
+			int i = 0;
+			for (i = 0; i < this->block_size; i++)
+				victim->data[i] = dram_read(addr++, 1);
+			victim->valid = 1;
+			victim->dirty = 0;
+			victim->tag = tag;
+			return victim;
+		}
 	}
-	else
-		return NULL;
-
+	return NULL;
 }
 
-static uint32_t read(struct Cache *this, swaddr_t addr, unsigned int len)
+static uint32_t read(struct Cache *this, swaddr_t addr, unsigned int len, int cache)
 {
-	Block *block = find(this, addr, true);
+	Block *block = find(this, addr, true, cache);
 	int offset = get_offsets(addr, this->offsets);
 	uint32_t ret;
 	uint8_t *target = (uint8_t *)&ret;
@@ -78,7 +101,7 @@ static uint32_t read(struct Cache *this, swaddr_t addr, unsigned int len)
 	{
 		if (offset + i >= this->block_size)
 		{
-			block = find(this, addr + i, true);
+			block = find(this, addr + i, true, cache);
 			offset = -i;
 			i--;
 		}
@@ -89,11 +112,13 @@ static uint32_t read(struct Cache *this, swaddr_t addr, unsigned int len)
 
 }
 
-static void write(struct Cache *this, swaddr_t addr, unsigned int len, uint32_t data, bool allocate)
+static void write(struct Cache *this, swaddr_t addr, unsigned int len, uint32_t data, bool allocate, int cache)
 {
-	Block* block = find(this, addr, allocate);
+	Block* block = find(this, addr, allocate, cache);
 	if (block == NULL && !allocate)
 		return;
+	if (cache == 2)
+		block->dirty = 1;
 	int offset = get_offsets(addr, this->offsets);
 	uint8_t *target = (uint8_t *)&data;
 	int i;
@@ -101,7 +126,7 @@ static void write(struct Cache *this, swaddr_t addr, unsigned int len, uint32_t 
 	{
 		if (offset + i >= this->block_size)
 		{
-			block = find(this, addr + i, allocate);
+			block = find(this, addr + i, allocate, cache);
 			if (block == NULL && !allocate)
 				return;
 			offset = -i;
@@ -115,12 +140,24 @@ static void write(struct Cache *this, swaddr_t addr, unsigned int len, uint32_t 
 
 uint32_t L1_read(void *this, swaddr_t addr, size_t len)
 {
-	return read((struct Cache *)this, addr, len);
+	return read((struct Cache *)this, addr, len, 1);
 }
 
 void L1_write (void *this, swaddr_t addr, size_t len, uint32_t data)
 {
-	write((struct Cache *)this, addr, len, data, false);
+	L2_cache.write(&L2_cache, addr, len, data);
+	write((struct Cache *)this, addr, len, data, false, 1);
+	return;
+}
+
+uint32_t L2_read(void *this, swaddr_t addr, size_t len)
+{
+	return read((struct Cache *)this, addr, len, 2);
+}
+
+void L2_write (void *this, swaddr_t addr, size_t len, uint32_t data)
+{
+	write((struct Cache *)this, addr, len, data, true, 2);
 	return;
 }
 
@@ -136,4 +173,15 @@ void init_cache()
 	L1_cache.write = L1_write;
 	L1_cache.blocks = (Block *)malloc(sizeof(Block) * 1024);
 	memset(L1_cache.blocks, 0, sizeof(Block) * 1024);
+	L2_cache.size = 4096;
+	L2_cache.bits_size = 12;
+	L2_cache.block_num = 16;
+	L2_cache.block_size = 64;
+	L2_cache.offsets = 6;
+	L2_cache.find = find;
+	L2_cache.read = L2_read;
+	L2_cache.write = L2_write;
+	L2_cache.blocks = (Block *)malloc(sizeof(Block) * 65536);
+	memset(L2_cache.blocks, 0, sizeof(Block) * 65536);
+	return;
 }
