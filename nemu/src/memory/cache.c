@@ -6,6 +6,7 @@
 #define DEBUG_CACHE
 
 static Cache L1_cache;
+const void* l1_cache_interface = &L1_cache;
 
 inline uint32_t get_set_index(swaddr_t addr, int offsets, int blocknum)
 {
