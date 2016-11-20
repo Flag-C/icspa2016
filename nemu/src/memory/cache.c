@@ -3,7 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define DEBUG_CACHE
+//#define DEBUG_CACHE
 
 static Cache L1_cache;
 static Cache L2_cache;
@@ -66,10 +66,10 @@ static Block* find(struct Cache *this, swaddr_t addr, bool allocate, int cache)
 		else if (cache == 2)
 		{
 			Block *victim = &(this->blocks[this->block_num * set_index + rand() % this->block_num]);
-#ifdef DEBUG_CACHE
-			Log("l2 miss");
 			swaddr_t victim_addr = (victim->tag << (this->set_index_bits_size + this->offsets))
 			                       + (set_index << (this->offsets));
+#ifdef DEBUG_CACHE
+			Log("l2 miss");
 			printf("victim addr:%x, vaild:%x, dirty:%x, tag: %x\n", victim_addr, victim->valid, victim->dirty, victim->tag);
 #endif
 			if (victim->dirty == 1 && victim->valid == 1)
