@@ -87,7 +87,7 @@ static struct {
 
 static int cmd_cache(char *args) {
 #ifndef CACHED
-	printf("not cached");
+	printf("not cached\n");
 	return 0;
 #endif
 	swaddr_t addr;
