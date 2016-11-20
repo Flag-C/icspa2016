@@ -1,6 +1,6 @@
 #include "common.h"
 
-#define CACHED
+//#define CACHED
 //#define DEBUGGING
 
 extern void* l1_cache_interface;
