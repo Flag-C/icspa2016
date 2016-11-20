@@ -3,7 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define DEBUG_CACHE
+// #define DEBUG_CACHE
 
 static Cache L1_cache;
 const void* l1_cache_interface = &L1_cache;
@@ -46,9 +46,9 @@ static Block* find(struct Cache *this, swaddr_t addr, bool allocate)
 	{
 		srand(time(0));
 		Block *victim = &(this->blocks[this->block_num * set_index + rand() % this->block_num]);
+#ifdef DEBUG_CACHE
 		swaddr_t victim_addr = (victim->tag << (this->bits_size + this->offsets))
 		                       + (set_index << (this->offsets));
-#ifdef DEBUG_CACHE
 		printf("victim addr:%x\n", victim_addr);
 #endif
 
