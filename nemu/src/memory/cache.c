@@ -26,11 +26,13 @@ static inline uint32_t get_offsets(swaddr_t addr, int offsets)
 
 static Block* find(struct Cache *this, swaddr_t addr, bool allocate, int cache)
 {
+#ifdef DEBUG_CACHE
+	printf("find addr:%x offsets:%x blocknum:%x\n", addr, this->offsets, this->block_num);
+#endif
 	uint32_t set_index = get_set_index(addr, this->offsets, this->block_num);
 	uint32_t tag = get_tag(addr, this->offsets, this->block_num);
 #ifdef DEBUG_CACHE
 	printf("set_index:%x\n", set_index);
-	printf("find addr:%x\n", addr);
 	printf("tag:%x\n", tag);
 #endif
 
