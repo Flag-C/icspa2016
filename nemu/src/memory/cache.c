@@ -9,17 +9,17 @@ static Cache L1_cache;
 static Cache L2_cache;
 const void* l1_cache_interface = &L1_cache;
 
-inline uint32_t get_set_index(swaddr_t addr, int offsets, int blocknum)
+static inline uint32_t get_set_index(swaddr_t addr, int offsets, int blocknum)
 {
 	return (addr >> offsets) & ((1 << blocknum) - 1);
 }
 
-inline uint32_t get_tag(swaddr_t addr, int offsets, int blocknum)
+static inline uint32_t get_tag(swaddr_t addr, int offsets, int blocknum)
 {
 	return addr >> offsets >> blocknum;
 }
 
-inline uint32_t get_offsets(swaddr_t addr, int offsets)
+static inline uint32_t get_offsets(swaddr_t addr, int offsets)
 {
 	return addr & ((1 << offsets) - 1);
 }
