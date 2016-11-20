@@ -12,8 +12,8 @@ typedef struct Block {
 
 typedef struct Cache {
 	int size;
-	int bits_size;
-	int block_num;//Cache_S
+	int set_index_bits_size;
+	int block_num;
 	int block_size;
 	int offsets;//Cache_B
 	Block* blocks;

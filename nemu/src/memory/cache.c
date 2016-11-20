@@ -9,14 +9,14 @@ static Cache L1_cache;
 static Cache L2_cache;
 const void* l1_cache_interface = &L1_cache;
 
-static inline uint32_t get_set_index(swaddr_t addr, int offsets, int blocknum)
+static inline uint32_t get_set_index(swaddr_t addr, int offsets, int set_index_size)
 {
-	return (addr >> offsets) & ((1 << blocknum) - 1);
+	return (addr >> offsets) & ((1 << set_index_size) - 1);
 }
 
-static inline uint32_t get_tag(swaddr_t addr, int offsets, int blocknum)
+static inline uint32_t get_tag(swaddr_t addr, int offsets, int set_index_size)
 {
-	return addr >> offsets >> blocknum;
+	return addr >> offsets >> set_index_size;
 }
 
 static inline uint32_t get_offsets(swaddr_t addr, int offsets)
@@ -29,8 +29,8 @@ static Block* find(struct Cache *this, swaddr_t addr, bool allocate, int cache)
 #ifdef DEBUG_CACHE
 	printf("find addr:%x offsets:%x blocknum:%x\n", addr, this->offsets, this->block_num);
 #endif
-	uint32_t set_index = get_set_index(addr, this->offsets, this->block_num);
-	uint32_t tag = get_tag(addr, this->offsets, this->block_num);
+	uint32_t set_index = get_set_index(addr, this->offsets, this->set_index_bits_size);
+	uint32_t tag = get_tag(addr, this->offsets, this->set_index_bits_size);
 #ifdef DEBUG_CACHE
 	printf("set_index:%x\n", set_index);
 	printf("tag:%x\n", tag);
@@ -53,7 +53,7 @@ static Block* find(struct Cache *this, swaddr_t addr, bool allocate, int cache)
 			Block *victim = &(this->blocks[this->block_num * set_index + rand() % this->block_num]);
 #ifdef DEBUG_CACHE
 			Log("l1 miss");
-			swaddr_t victim_addr = (victim->tag << (this->bits_size + this->offsets))
+			swaddr_t victim_addr = (victim->tag << (this->set_index_bits_size + this->offsets))
 			                       + (set_index << (this->offsets));
 			printf("victim addr:%x\n", victim_addr);
 #endif
@@ -68,7 +68,7 @@ static Block* find(struct Cache *this, swaddr_t addr, bool allocate, int cache)
 			Block *victim = &(this->blocks[this->block_num * set_index + rand() % this->block_num]);
 #ifdef DEBUG_CACHE
 			Log("l2 miss");
-			swaddr_t victim_addr = (victim->tag << (this->bits_size + this->offsets))
+			swaddr_t victim_addr = (victim->tag << (this->set_index_bits_size + this->offsets))
 			                       + (set_index << (this->offsets));
 			printf("victim addr:%x, vaild:%x, dirty:%x, tag: %x\n", victim_addr, victim->valid, victim->dirty, victim->tag);
 #endif
@@ -166,7 +166,7 @@ void L2_write (void *this, swaddr_t addr, size_t len, uint32_t data)
 void init_cache()
 {
 	L1_cache.size = 128;
-	L1_cache.bits_size = 7;
+	L1_cache.set_index_bits_size = 7;
 	L1_cache.block_num = 8;
 	L1_cache.block_size = 64;
 	L1_cache.offsets = 6;
@@ -176,7 +176,7 @@ void init_cache()
 	L1_cache.blocks = (Block *)malloc(sizeof(Block) * 1024);
 	memset(L1_cache.blocks, 0, sizeof(Block) * 1024);
 	L2_cache.size = 4096;
-	L2_cache.bits_size = 12;
+	L2_cache.set_index_bits_size = 12;
 	L2_cache.block_num = 16;
 	L2_cache.block_size = 64;
 	L2_cache.offsets = 6;
