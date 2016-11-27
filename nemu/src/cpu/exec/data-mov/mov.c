@@ -42,3 +42,12 @@ make_helper(mov_r2crx)
 	else Assert(1, "Not accomplish such cr reg");
 	return 2;
 }
+
+make_helper(mov_rm2sreg)
+{
+	int len = decode_rm_w(eip + 1);
+	uint8_t sreg = instr_fetch(eip + 1, 1);
+	sreg = (sreg >> 3) & 0x7;
+	seg(sreg).selector = op_src->val;
+	return len + 1;
+}
