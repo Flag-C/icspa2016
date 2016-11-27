@@ -32,6 +32,7 @@ static void init_sreg() {
 	cpu.cr0.val = 0;
 	seg(CS).base = 0;
 	seg(CS).limit = 0xffffffff;
+	seg(CS).cache = true;
 }
 
 void init_monitor(int argc, char *argv[]) {

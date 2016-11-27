@@ -34,6 +34,7 @@ make_helper(ljmp)
 	*tmp = lnaddr_read(dis_addr, 8);
 	seg(CS).base = descriptor.base_15_0 + (descriptor.base_23_16 << 16) + (descriptor.base_31_24 << 24);
 	seg(CS).limit = descriptor.limit_15_0 + (descriptor.limit_19_16 << 16);
+	seg(CS).cache = true;
 	cpu.eip = new_eip - 7;
 	return 7;
 }

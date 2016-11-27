@@ -24,6 +24,7 @@ typedef struct SREG {
 		};
 		uint16_t selector;
 	};
+	bool cache;
 	uint32_t base;
 	uint32_t limit;
 } sreg;
