@@ -1,4 +1,6 @@
 #include "common.h"
+#include "cpu/reg.h"
+#include "../../lib-common/x86-inc/mmu.h"
 
 #define CACHED
 //#define DEBUGGING
@@ -48,11 +50,28 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	hwaddr_write(addr, len, data);
 }
 
+lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg)
+{
+	if (cpu.cr0.protect_enable == 1) {
+		lnaddr_t dis_addr = (lnaddr_t)cpu.gdtr.base_addr + 8 * seg(sreg).index;
+		//translation
+		SegDesc descriptor;
+		uint64_t *tmp = (uint64_t *)&descriptor;
+		*tmp = lnaddr_read(dis_addr, 8);
+		seg(sreg).base = descriptor.base_15_0 + (descriptor.base_23_16 << 16) + (descriptor.base_31_24 << 24);
+		seg(sreg).limit = descriptor.limit_15_0 + (descriptor.limit_19_16 << 16);
+		return addr + sreg(sreg).base;
+	}
+	else
+		return (lnaddr_t)addr;
+}
+
 uint32_t swaddr_read(swaddr_t addr, size_t len) {
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
-	return lnaddr_read(addr, len);
+	lnaddr_t lnaddr = seg_translate(addr, len, sreg);
+	return lnaddr_read(lnaddr, len);
 }
 
 void swaddr_write(swaddr_t addr, size_t len, uint32_t data) {
