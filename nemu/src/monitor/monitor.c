@@ -28,6 +28,10 @@ static void init_eflags() {
 	cpu.eflags = 2;
 }
 
+static void init_sreg() {
+	cpu.cr0.val = 0;
+}
+
 void init_monitor(int argc, char *argv[]) {
 	/* Perform some global initialization */
 
@@ -85,6 +89,8 @@ void restart() {
 	/* Read the file with name `argv[1]' into ramdisk. */
 	init_ramdisk();
 #endif
+	init_sreg();
+
 	init_cache();
 	/* Read the entry code into memory. */
 	load_entry();

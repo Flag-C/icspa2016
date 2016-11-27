@@ -91,6 +91,8 @@
 #include "string/scas.h"
 #include "string/stos.h"
 
+#include "others/lgdt.h"
+
 #include "misc/misc.h"
 
 #include "special/special.h"
