@@ -3,8 +3,8 @@
 #define instr movs
 make_helper(concat(movs_, SUFFIX))
 {
-	DATA_TYPE result = MEM_R(reg_l(R_ESI));
-	MEM_W(reg_l(R_EDI), result);
+	DATA_TYPE result = MEM_R(reg_l(R_ESI), DS);
+	MEM_W(reg_l(R_EDI), result, ES);
 	if (cpu.DF)
 	{
 		reg_l(R_ESI) -= DATA_BYTE;

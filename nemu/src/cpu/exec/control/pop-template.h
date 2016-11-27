@@ -3,8 +3,8 @@
 #define instr pop
 
 static void do_execute () {
-	OPERAND_W(op_src, MEM_R(REG(R_ESP)));
-	MEM_W(REG(R_ESP), 0);
+	OPERAND_W(op_src, MEM_R(REG(R_ESP), SS));
+	MEM_W(REG(R_ESP), 0, SS);
 	REG(R_ESP) += DATA_BYTE;
 	print_asm_template1();
 }

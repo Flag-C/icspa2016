@@ -60,24 +60,25 @@ lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg)
 		*tmp = lnaddr_read(dis_addr, 8);
 		seg(sreg).base = descriptor.base_15_0 + (descriptor.base_23_16 << 16) + (descriptor.base_31_24 << 24);
 		seg(sreg).limit = descriptor.limit_15_0 + (descriptor.limit_19_16 << 16);
-		return addr + sreg(sreg).base;
+		return addr + seg(sreg).base;
 	}
 	else
 		return (lnaddr_t)addr;
 }
 
-uint32_t swaddr_read(swaddr_t addr, size_t len) {
+uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
-	lnaddr_t lnaddr = seg_translate(addr, len, sreg);
+	lnaddr_t lnaddr = seg_translate(addr, sreg);
 	return lnaddr_read(lnaddr, len);
 }
 
-void swaddr_write(swaddr_t addr, size_t len, uint32_t data) {
+void swaddr_write(swaddr_t addr, size_t len, uint32_t data, uint8_t sreg) {
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
-	lnaddr_write(addr, len, data);
+	lnaddr_t lnaddr = seg_translate(addr, sreg);
+	lnaddr_write(lnaddr, len, data);
 }
 

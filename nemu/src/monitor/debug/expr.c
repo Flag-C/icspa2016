@@ -259,7 +259,7 @@ uint32_t eval(int p, int q) {
 			uint32_t val = eval(p + 1, q);
 			switch (tokens[p].type)
 			{
-			case POINTER: return swaddr_read(val, 4);
+			case POINTER: return swaddr_read(val, 4, DS);
 			case NEG: return -val;
 			case '!': return !val;
 			default: Assert(1, "strange expr");
