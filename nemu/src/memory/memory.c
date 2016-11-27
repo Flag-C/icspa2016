@@ -57,8 +57,10 @@ lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg)
 			lnaddr_t dis_addr = (lnaddr_t)cpu.gdtr.base_addr + 8 * seg(sreg).index;
 			//translation
 			SegDesc descriptor;
-			uint64_t *tmp = (uint64_t *)&descriptor;
-			*tmp = lnaddr_read(dis_addr, 8);
+			uint32_t *tmp = (uint32_t *)&descriptor;
+			*tmp = lnaddr_read( dis_addr, 4);
+			tmp++;
+			*tmp = lnaddr_read( dis_addr + 4, 4);
 			seg(sreg).base = descriptor.base_15_0 + (descriptor.base_23_16 << 16) + (descriptor.base_31_24 << 24);
 			seg(sreg).limit = descriptor.limit_15_0 + (descriptor.limit_19_16 << 16);
 			seg(sreg).cache = true;

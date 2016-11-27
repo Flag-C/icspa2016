@@ -30,8 +30,10 @@ make_helper(ljmp)
 	lnaddr_t dis_addr = (lnaddr_t)cpu.gdtr.base_addr + 8 * seg(CS).index;
 	//translation
 	SegDesc descriptor;
-	uint64_t *tmp = (uint64_t *)&descriptor;
-	*tmp = lnaddr_read(dis_addr, 8);
+	uint32_t *tmp = (uint32_t *)&descriptor;
+	*tmp = lnaddr_read( dis_addr, 4);
+	tmp++;
+	*tmp = lnaddr_read( dis_addr + 4, 4);
 	seg(CS).base = descriptor.base_15_0 + (descriptor.base_23_16 << 16) + (descriptor.base_31_24 << 24);
 	seg(CS).limit = descriptor.limit_15_0 + (descriptor.limit_19_16 << 16);
 	seg(CS).cache = true;
