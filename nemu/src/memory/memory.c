@@ -54,7 +54,7 @@ lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg)
 {
 	if (cpu.cr0.protect_enable == 1) {
 		if (!seg(sreg).cache) {
-			lnaddr_t dis_addr = (lnaddr_t)cpu.gdtr.base_addr + 8 * seg(sreg).index;
+			lnaddr_t dis_addr = (lnaddr_t)cpu.gdtr.base_addr + (seg(sreg).index << 3);
 			//translation
 			SegDesc descriptor;
 			uint32_t *tmp = (uint32_t *)&descriptor;
