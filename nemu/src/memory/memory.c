@@ -55,9 +55,11 @@ hwaddr_t page_translate(lnaddr_t addr)
 	hwaddr_t dir_addr = (cpu.cr3.page_directory_base << 12) + dir * 4;
 	PDE page_dir;
 	page_dir.val = hwaddr_read(dir_addr, 4);
+	Log("dir_addr=%x", dir_addr);
 	Assert(page_dir.present == 1, "unvalid page directry");
 	hwaddr_t tab_addr = (page_dir.page_frame << 12) + page * 4;
 	PTE page_tab;
+	Log("tab addr=%x", tab_addr);
 	page_tab.val = hwaddr_read(tab_addr, 4);
 	Assert(page_tab.present == 1, "unvalid page table");
 	return (page_tab.page_frame << 12) + offset;
