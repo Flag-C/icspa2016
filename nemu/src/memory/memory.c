@@ -7,6 +7,11 @@
 
 extern void* l1_cache_interface;
 
+static inline uint32_t decompose_addr(uint32_t data, uint32_t a, uint32_t b)
+{
+	return (data << (31 - b)) >> (31 - b + a);
+}
+
 uint32_t L1_read(void *this, swaddr_t addr, size_t len);
 
 void  L1_write(void *this, swaddr_t addr, size_t len, uint32_t data);
@@ -42,12 +47,53 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 #endif
 }
 
+hwaddr_t page_translate(lnaddr_t addr)
+{
+	uint32_t offset = decompose_addr(addr, 0, 12);
+	uint32_t page = decompose_addr(addr, 12, 21);
+	uint32_t dir = decompose_addr(addr, 22, 31);
+	hwaddr_t dir_addr = (cpu.cr3.page_directory_base << 12) + dir * 4;
+	PDE page_dir;
+	page_dir.val = hwaddr_read(dir_addr, 4);
+	Assert(page_dir.present == 1, "unvalid page directry");
+	hwaddr_t tab_addr = (page_dir.page_frame << 12) + page * 4;
+	PTE page_tab;
+	page_tab.val = hwaddr_read(tab_addr, 4);
+	Assert(page_tab.present == 1, "unvalid page table");
+	return (page_tab.page_frame << 12) + offset;
+};
+
+
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	return hwaddr_read(addr, len);
+	assert(len == 1 || len == 2 || len == 4);
+	if (cpu.cr0.protect_enable == 1
+	        && cpu.cr0.paging == 1)
+	{
+		if ((addr & 0xfffff000) != ((addr + len - 1) & 0xfffff000))
+			Assert(0, "read cross page");
+		else {
+			hwaddr_t hwaddr = page_translate(addr);
+			return hwaddr_read(hwaddr, len);
+
+		}
+	}
+	else return hwaddr_read(addr, len);
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-	hwaddr_write(addr, len, data);
+	assert(len == 1 || len == 2 || len == 4);
+	if (cpu.cr0.protect_enable == 1
+	        && cpu.cr0.paging == 1)
+	{
+		if ((addr & 0xfffff000) != ((addr + len - 1) & 0xfffff000))
+			Assert(0, "write cross page");
+		else {
+			hwaddr_t hwaddr = page_translate(addr);
+			return hwaddr_write(hwaddr, len, data);
+
+		}
+	}
+	else return hwaddr_write(addr, len, data);
 }
 
 lnaddr_t seg_translate(swaddr_t addr, uint8_t sreg)

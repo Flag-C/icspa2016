@@ -8,6 +8,7 @@
 
 #define DEBUG
 #define LOG_FILE
+#define IA32_PAGE
 
 #include "debug.h"
 #include "macro.h"
