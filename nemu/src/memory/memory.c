@@ -66,11 +66,10 @@ hwaddr_t page_translate(lnaddr_t addr)
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	assert(len == 1 || len == 2 || len == 4);
-	if (cpu.cr0.protect_enable == 1
-	        && cpu.cr0.paging == 1)
+	if ((cpu.cr0.protect_enable == 1) && (cpu.cr0.paging == 1))
 	{
 		if ((addr & 0xfffff000) != ((addr + len - 1) & 0xfffff000))
-			assert(0);
+			Assert(0, "read cross page");
 		else {
 			hwaddr_t hwaddr = page_translate(addr);
 			Log("line addr=%x;hwaddr=%x", addr, hwaddr);
