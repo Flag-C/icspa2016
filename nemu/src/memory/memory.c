@@ -70,7 +70,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	        && cpu.cr0.paging == 1)
 	{
 		if ((addr & 0xfffff000) != ((addr + len - 1) & 0xfffff000))
-			Assert(0, "read cross page");
+			assert(0);
 		else {
 			hwaddr_t hwaddr = page_translate(addr);
 			Log("line addr=%x;hwaddr=%x", addr, hwaddr);
