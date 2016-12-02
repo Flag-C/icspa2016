@@ -73,8 +73,9 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 		if ((addr & 0xfffff000) != ((addr + len - 1) & 0xfffff000))
 			Assert(0, "read cross page");
 		else {
+			Log("addr to be translated:%x", addr);
 			hwaddr_t hwaddr = page_translate(addr);
-			Log("line addr=%x;hwaddr=%x", addr, hwaddr);
+			Log("hwaddr=%x", hwaddr);
 			return hwaddr_read(hwaddr, len);
 
 		}
