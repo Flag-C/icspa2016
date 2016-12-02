@@ -55,7 +55,6 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 void init_TLB()
 {
 	TLB.size = 1;
-	TLB.set_index_bits_size = 0;
 	TLB.block_num = 64;
 	TLB.blocks = (Block *)malloc(sizeof(Block) * 64);
 	memset(TLB.blocks, 0, sizeof(Block) * 64);
