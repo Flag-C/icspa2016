@@ -38,7 +38,7 @@ void init_page(void) {
 		subl %0, %%eax;\
 		jge 1b;\
 		cld" : :
-		"i"(PAGE_SIZE), "a"((PHY_MEM - PAGE_SIZE) | 0x7), "D"(ptable - 1));
+	              "i"(PAGE_SIZE), "a"((PHY_MEM - PAGE_SIZE) | 0x7), "D"(ptable - 1));
 
 
 	/*

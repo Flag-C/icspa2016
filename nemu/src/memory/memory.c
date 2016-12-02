@@ -75,6 +75,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 			Assert(0, "read cross page");
 		else {
 			Log("addr to be translated:%x", addr);
+			Assert(cpu.cr3.val != 0, "cr3 not read");
 			hwaddr_t hwaddr = page_translate(addr);
 			Log("hwaddr=%x", hwaddr);
 			return hwaddr_read(hwaddr, len);
