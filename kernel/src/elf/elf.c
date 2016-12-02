@@ -72,6 +72,7 @@ uint32_t loader() {
 			}
 #endif
 #ifndef IA32_PAGE
+
 #ifndef HAS_DEVICE
 			ramdisk_read((void*)ph->p_vaddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
 #else
