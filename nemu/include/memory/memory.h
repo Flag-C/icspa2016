@@ -17,7 +17,6 @@ extern uint8_t *hw_mem;
 	hwa_to_va(addr); \
 })
 
-void init_cache();
 uint32_t swaddr_read(swaddr_t, size_t, uint8_t);
 uint32_t lnaddr_read(lnaddr_t, size_t);
 uint32_t hwaddr_read(hwaddr_t, size_t);

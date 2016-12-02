@@ -68,7 +68,7 @@ void init_TLB()
 
 hwaddr_t page_translate(lnaddr_t addr)
 {
-	struct Cache *this = &TLB;
+	/*struct Cache *this = &TLB;
 	uint32_t set_index = 0;
 	uint32_t tag = decompose_addr(addr, 12, 31);
 	uint32_t offset = decompose_addr(addr, 0, 11);
@@ -83,7 +83,8 @@ hwaddr_t page_translate(lnaddr_t addr)
 	Log("TLB miss");
 	srand(time(0));
 	Block *victim = &(this->blocks[this->block_num * set_index + rand() % this->block_num]);
-
+	*/
+	uint32_t offset = decompose_addr(addr, 0, 11);
 	uint32_t page = decompose_addr(addr, 12, 21);
 	uint32_t dir = decompose_addr(addr, 22, 31);
 	//Log("page_directory_base=%x", cpu.cr3.page_directory_base);
@@ -98,10 +99,11 @@ hwaddr_t page_translate(lnaddr_t addr)
 	page_tab.val = hwaddr_read(tab_addr, 4);
 	Assert(page_tab.present == 1, "unvalid page table");
 	//Log("pageframe=%x,offset=%x", page_tab.page_frame, offset);
-	uint32_t *tmp = (uint32_t *)victim->data;
+	/*uint32_t *tmp = (uint32_t *)victim->data;
 	*tmp = page_tab.page_frame;
 	victim->valid = 1;
 	victim->tag = tag;
+	*/
 	return (page_tab.page_frame << 12) + offset;
 };
 
