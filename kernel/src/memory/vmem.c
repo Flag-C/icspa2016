@@ -17,18 +17,16 @@ void create_video_mapping() {
 	 */
 	//panic("please implement me");
 	uint32_t addr = VMEM_ADDR;
-	int pages = SCR_SIZE / 4096 + 1;
+	int pages = SCR_SIZE / 4096;
 	int i;
 	for (i = 0; i < pages; i++)
 	{
 		unsigned dir = 0x3ff & (addr >> 22);
 		unsigned page = 0x3ff & (addr >> 12);
-
 		PTE *pt = kptable[0];
-
 		(get_updir() + dir)->val = make_pde(va_to_pa(pt));
-
 		pt[page].val = make_pte(addr);
+		addr += 4096;
 	}
 }
 
