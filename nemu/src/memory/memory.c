@@ -79,7 +79,9 @@ hwaddr_t page_translate(lnaddr_t addr)
 			return ((hwaddr_t)(*(this->blocks[i].data)) << 12) + offset;
 	Log("TLB miss");
 	srand(time(0));
+	Log("can time");
 	Block *victim = &(this->blocks[this->block_num * set_index + rand() % this->block_num]);
+	Log("can random");
 
 	uint32_t page = decompose_addr(addr, 12, 21);
 	uint32_t dir = decompose_addr(addr, 22, 31);
