@@ -95,7 +95,6 @@ hwaddr_t page_translate(lnaddr_t addr)
 	uint32_t *tmp = (uint32_t *)victim->data;
 	*tmp = page_tab.page_frame;
 	victim->valid = 1;
-	victim->dirty = 0;
 	victim->tag = tag;
 	return (page_tab.page_frame << 12) + offset;
 };
