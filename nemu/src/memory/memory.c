@@ -112,7 +112,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 			lnaddr_t sec_page_addr = (addr + len - 1) & 0xfffff000;
 			uint32_t prev_len = 4096 - (addr - prev_page_addr);
 			uint32_t sec_len = len - prev_len;
-			//Log("read cross page,lnaddr=%x,hwaddr1=%x,hwaddr2=%x", addr, page_translate(addr), page_translate(sec_page_addr));
+			Log("read cross page,lnaddr=%x,hwaddr1=%x,hwaddr2=%x", addr, page_translate(addr), page_translate(sec_page_addr));
 			return (hwaddr_read(page_translate(sec_page_addr), sec_len))
 			       + (hwaddr_read(page_translate(addr), prev_len) << sec_len);
 		}
