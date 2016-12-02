@@ -78,10 +78,10 @@ hwaddr_t page_translate(lnaddr_t addr)
 		if (this->blocks[i].valid && this->blocks[i].tag == tag)
 		{
 			uint32_t *a = (uint32_t *)(this->blocks[i].data);
-			Log("tag=%x,pageframe=%x,offset=%x", tag, *a, offset);
+			//Log("tag=%x,pageframe=%x,offset=%x", tag, *a, offset);
 			return (*a << 12) + offset;
 		}
-	Log("TLB miss");
+	//Log("TLB miss");
 	srand(time(0));
 	Block *victim = &(this->blocks[this->block_num * set_index + rand() % this->block_num]);
 
