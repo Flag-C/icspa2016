@@ -78,7 +78,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 		if (this->blocks[i].valid && this->blocks[i].tag == tag)
 		{
 			uint32_t *tmp = (uint32_t *)this->blocks->data;
-			Log("pageframe=%x,offset=%x", *tmp, offset);
+			Log("tag=%x,pageframe=%x,offset=%x", tag, *tmp, offset);
 			return (*tmp << 12) + offset;
 		}
 	Log("TLB miss");
