@@ -28,7 +28,7 @@ make_helper(mov_crx2r)
 	int src = (registers >> 3) & 0x7;
 	if (src == 0)
 		reg_l(dest) = cpu.cr0.val;
-	else Assert(1, "Not accomplish such cr reg");
+	else Assert(0, "Not accomplish such cr reg");
 	return 2;
 }
 
@@ -39,7 +39,7 @@ make_helper(mov_r2crx)
 	int dest = (registers >> 3) & 0x7;
 	if (dest == 0)
 		cpu.cr0.val = reg_l(src);
-	else Assert(1, "Not accomplish such cr reg");
+	else Assert(0, "Not accomplish such cr reg");
 	return 2;
 }
 
