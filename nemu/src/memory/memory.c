@@ -112,14 +112,14 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 			lnaddr_t sec_page_addr = (addr + len - 1) & 0xfffff000;
 			uint32_t prev_len = 4096 - (addr - prev_page_addr);
 			uint32_t sec_len = len - prev_len;
-			Log("read cross page,lnaddr=%x,hwaddr1=%x,hwaddr2=%x", addr, page_translate(addr), page_translate(sec_page_addr));
+			//Log("read cross page,lnaddr=%x,hwaddr1=%x,hwaddr2=%x", addr, page_translate(addr), page_translate(sec_page_addr));
 			return (hwaddr_read(page_translate(sec_page_addr), sec_len) << prev_len)
 			       + hwaddr_read(page_translate(addr), prev_len);
 		}
 		else {
-			Log("addr to be translated:%x", addr);
+			//Log("addr to be translated:%x", addr);
 			hwaddr_t hwaddr = page_translate(addr);
-			Log("hwaddr=%x", hwaddr);
+			//Log("hwaddr=%x", hwaddr);
 			return hwaddr_read(hwaddr, len);
 
 		}
@@ -133,7 +133,17 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	        && cpu.cr0.paging == 1)
 	{
 		if ((addr & 0xfffff000) != ((addr + len - 1) & 0xfffff000))
-			Assert(0, "write cross page");
+		{
+			//write cross page
+			lnaddr_t prev_page_addr = addr & 0xfffff000;
+			lnaddr_t sec_page_addr = (addr + len - 1) & 0xfffff000;
+			uint32_t prev_len = 4096 - (addr - prev_page_addr);
+			uint32_t sec_len = len - prev_len;
+			uint32_t data1 = (data << sec_len) >> sec_len;
+			uint32_t data2 = data >> prev_len;
+			hwaddr_write(addr, prev_len, data1);
+			return hwaddr_write(sec_page_addr, sec_len, data2);
+		}
 		else {
 			//Log("addr to be translated:%x", addr);
 			hwaddr_t hwaddr = page_translate(addr);
