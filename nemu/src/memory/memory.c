@@ -1,9 +1,14 @@
 #include "common.h"
 #include "cpu/reg.h"
+#include "memory/cache.h"
 #include "../../lib-common/x86-inc/mmu.h"
+#include <time.h>
+#include <stdlib.h>
 
 #define CACHED
 //#define DEBUGGING
+
+static Cache TLB;
 
 extern void* l1_cache_interface;
 
@@ -47,9 +52,32 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 #endif
 }
 
+void init_TLB()
+{
+	TLB.size = 1;
+	TLB.set_index_bits_size = 0;
+	TLB.block_num = 64;
+	TLB.block_size = 4;
+	TLB.offsets = 2;
+	TLB.blocks = (Block *)malloc(sizeof(Block) * 64);
+	memset(TLB.blocks, 0, sizeof(Block) * 64);
+}
+
 hwaddr_t page_translate(lnaddr_t addr)
 {
+	struct Cache *this = &TLB;
+	uint32_t set_index = 0;
+	uint32_t tag = decompose_addr(addr, 12, 31);
 	uint32_t offset = decompose_addr(addr, 0, 11);
+
+	int i = 0;
+	for (i = this->block_num * set_index; i < (this->block_num * (set_index + 1)); i++)
+		if (this->blocks[i].valid && this->blocks[i].tag == tag)
+			return ((hwaddr_t)(*(this->blocks[i].data)) << 12) + offset;
+	Log("TLB miss");
+	srand(time(0));
+	Block *victim = &(this->blocks[this->block_num * set_index + rand() % this->block_num]);
+
 	uint32_t page = decompose_addr(addr, 12, 21);
 	uint32_t dir = decompose_addr(addr, 22, 31);
 	//Log("page_directory_base=%x", cpu.cr3.page_directory_base);
@@ -64,6 +92,11 @@ hwaddr_t page_translate(lnaddr_t addr)
 	page_tab.val = hwaddr_read(tab_addr, 4);
 	Assert(page_tab.present == 1, "unvalid page table");
 	//Log("pageframe=%x,offset=%x", page_tab.page_frame, offset);
+	uint32_t *tmp = (uint32_t *)victim->data;
+	*tmp = page_tab.page_frame;
+	victim->valid = 1;
+	victim->dirty = 0;
+	victim->tag = tag;
 	return (page_tab.page_frame << 12) + offset;
 };
 
