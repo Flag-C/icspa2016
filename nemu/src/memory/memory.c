@@ -52,6 +52,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	uint32_t offset = decompose_addr(addr, 0, 12);
 	uint32_t page = decompose_addr(addr, 12, 21);
 	uint32_t dir = decompose_addr(addr, 22, 31);
+	Log("page_directory_base=%x", cpu.cr3.page_directory_base);
 	hwaddr_t dir_addr = (cpu.cr3.page_directory_base << 12) + dir * 4;
 	PDE page_dir;
 	page_dir.val = hwaddr_read(dir_addr, 4);
