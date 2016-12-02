@@ -142,8 +142,8 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 			lnaddr_t sec_page_addr = (addr + len - 1) & 0xfffff000;
 			uint32_t prev_len = 4096 - (addr - prev_page_addr);
 			uint32_t sec_len = len - prev_len;
-			uint32_t data1 = (data << sec_len) >> sec_len;
-			uint32_t data2 = data >> prev_len;
+			uint32_t data1 = (data << sec_len * 8) >> sec_len * 8;
+			uint32_t data2 = data >> prev_len * 8;
 			hwaddr_write(addr, prev_len, data1);
 			return hwaddr_write(sec_page_addr, sec_len, data2);
 		}
