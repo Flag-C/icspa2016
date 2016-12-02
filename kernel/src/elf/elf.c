@@ -60,7 +60,11 @@ uint32_t loader() {
 				uint32_t load_num = 4096 - offset;
 				if ((ph->p_filesz - loaded) < load_num)
 					load_num = ph->p_filesz - loaded;
+#ifndef HAS_DEVICE
 				ramdisk_read((void *)(page_buf + offset), ELF_OFFSET_IN_DISK + ph->p_offset + loaded, load_num);
+#else
+				ide_read((void *)(page_buf + offset), ELF_OFFSET_IN_DISK + ph->p_offset + loaded, load_num);
+#endif
 				memcpy((void *)addr, page_buf, 4096);
 				virt_addr += 4096;
 				loaded += load_num;
@@ -68,7 +72,11 @@ uint32_t loader() {
 			}
 #endif
 #ifndef IA32_PAGE
+#ifndef HAS_DEVICE
 			ramdisk_read((void*)ph->p_vaddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
+#else
+			ide_read((void*)ph->p_vaddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
+#endif
 			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
