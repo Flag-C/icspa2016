@@ -102,3 +102,5 @@
 #include "special/iret.h"
 #include "special/pusha.h"
 #include "special/popa.h"
+#include "special/io.h"
+#include "special/hlt.h"

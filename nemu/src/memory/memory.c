@@ -11,6 +11,9 @@
 static Cache TLB;
 
 extern void* l1_cache_interface;
+extern uint32_t mmio_read(hwaddr_t addr, size_t len, int map_NO);
+extern int is_mmio(hwaddr_t addr);
+extern void mmio_write(hwaddr_t addr, size_t len, uint32_t data, int map_NO);
 
 static inline uint32_t decompose_addr(uint32_t data, uint32_t a, uint32_t b)
 {
@@ -30,12 +33,23 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 #ifdef DEBUGGING
 	printf("read addr:%x\n", addr);
 #endif
+
+#ifdef HAS_DEVICE
+	if (is_mmio(addr) != -1)
+		return mmio_read(addr, len, is_mmio(addr));
+	else {
+#endif
+
 #ifndef CACHED
-	return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
+		return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 #endif
 
 #ifdef CACHED
-	return L1_read(l1_cache_interface, addr, len) & (~0u >> ((4 - len) << 3));
+		return L1_read(l1_cache_interface, addr, len) & (~0u >> ((4 - len) << 3));
+#endif
+
+#ifdef HAS_DEVICE
+	}
 #endif
 }
 
@@ -43,12 +57,23 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 #ifdef DEBUGGING
 	printf("write addr:%x data:%x\n", addr, data);
 #endif
+
+#ifdef HAS_DEVICE
+	if (is_mmio(addr) != -1)
+		return mmio_write(addr, len, data, is_mmio(addr));
+	else {
+#endif
+
 #ifndef CACHED
-	dram_write(addr, len, data);
+		dram_write(addr, len, data);
 #endif
 
 #ifdef CACHED
-	L1_write(l1_cache_interface, addr, len, data);
+		L1_write(l1_cache_interface, addr, len, data);
+#endif
+
+#ifdef HAS_DEVICE
+	}
 #endif
 }
 
