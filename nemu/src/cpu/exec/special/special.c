@@ -34,7 +34,7 @@ make_helper(nemu_trap) {
 		uint32_t len = cpu.edx;
 		uint8_t ch;
 		while (len--) {
-			ch = swaddr_read(str, len, DS);
+			ch = swaddr_read(str, 1, DS);
 			if (ch == 0) break;
 			printf("%c", ch);
 			str++;
