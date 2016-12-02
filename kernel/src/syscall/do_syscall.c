@@ -5,6 +5,7 @@
 void add_irq_handle(int, void (*)(void));
 uint32_t mm_brk(uint32_t);
 int fs_ioctl(int, uint32_t, void *);
+void serial_printc(char);
 
 static void sys_brk(TrapFrame *tf) {
 	tf->eax = mm_brk(tf->ebx);
@@ -34,10 +35,11 @@ void do_syscall(TrapFrame *tf) {
 	case SYS_write: // write()
 		//fd:ebx
 		if (tf->ebx == 1 || tf->ebx == 2) {
-			char *buf = (void *) tf->ecx;
-			int len = tf->edx;
-			asm volatile (".byte 0xd6" : : "a"(2), "c"(buf), "d"(len));
-			tf->eax = len;
+			int count;
+			for (count = 0; count < tf->edx; count++)
+				serial_printc(((char*)tf->ecx)[count]);
+			tf->eax = tf->edx;
+			break;
 		}
 		break;
 
