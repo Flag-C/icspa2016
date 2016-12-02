@@ -103,6 +103,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	*tmp = page_tab.page_frame;
 	victim->valid = 1;
 	victim->tag = tag;
+	Log("TLB save, tag=%x,data=%x", tag, *tmp);
 	return (page_tab.page_frame << 12) + offset;
 };
 
