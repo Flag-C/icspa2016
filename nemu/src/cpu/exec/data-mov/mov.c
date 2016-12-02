@@ -28,7 +28,10 @@ make_helper(mov_crx2r)
 	int src = (registers >> 3) & 0x7;
 	if (src == 0)
 		reg_l(dest) = cpu.cr0.val;
+	else if (src == 3)
+		reg_l(dest) = cpu.cr3.val;
 	else Assert(0, "Not accomplish such cr reg");
+	print_asm("mov cr%x %s", src, regsl[dest]);
 	return 2;
 }
 
@@ -39,7 +42,10 @@ make_helper(mov_r2crx)
 	int dest = (registers >> 3) & 0x7;
 	if (dest == 0)
 		cpu.cr0.val = reg_l(src);
+	else if (dest == 3)
+		cpu.cr3.val = reg_l(src);
 	else Assert(0, "Not accomplish such cr reg");
+	print_asm("mov %s cr%x", regsl[src], dest);
 	return 2;
 }
 
