@@ -59,6 +59,9 @@ void init_TLB()
 	TLB.block_num = 64;
 	TLB.block_size = 4;
 	TLB.offsets = 2;
+	TLB.find = NULL;
+	TLB.read = NULL;
+	TLB.write = NULL;
 	TLB.blocks = (Block *)malloc(sizeof(Block) * 64);
 	memset(TLB.blocks, 0, sizeof(Block) * 64);
 }
