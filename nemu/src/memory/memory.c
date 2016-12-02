@@ -99,7 +99,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	page_tab.val = hwaddr_read(tab_addr, 4);
 	Assert(page_tab.present == 1, "unvalid page table");
 	//Log("pageframe=%x,offset=%x", page_tab.page_frame, offset);
-	uint32_t *tmp = (uint32_t *)victim->data;
+	uint32_t *tmp = (uint32_t *)(victim->data);
 	*tmp = page_tab.page_frame;
 	victim->valid = 1;
 	victim->tag = tag;
