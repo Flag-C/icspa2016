@@ -71,7 +71,7 @@ typedef struct {
 	{
 		uint32_t base_addr;
 		uint16_t seg_limit;
-	} gdtr;
+	} gdtr, idtr;
 	CR0 cr0;
 	CR3 cr3;
 	sreg s_reg[6];

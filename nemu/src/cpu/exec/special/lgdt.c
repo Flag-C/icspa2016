@@ -5,5 +5,6 @@ make_helper(lgdt) {
 
 	cpu.gdtr.seg_limit = lnaddr_read(address, 2);
 	cpu.gdtr.base_addr = instr_fetch(address + 2, 4);
+	print_asm("lgdt");
 	return len;
 }

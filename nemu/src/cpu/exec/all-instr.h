@@ -91,9 +91,14 @@
 #include "string/scas.h"
 #include "string/stos.h"
 
-#include "others/lgdt.h"
 
 #include "misc/misc.h"
 
 #include "special/special.h"
 #include "special/setflag.h"
+#include "special/lgdt.h"
+#include "special/lidt.h"
+#include "special/int.h"
+#include "special/iret.h"
+#include "special/pusha.h"
+#include "special/popa.h"
