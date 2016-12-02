@@ -4,6 +4,7 @@ extern jmp_buf jbuf;
 
 make_helper(iret)
 {
+	print_asm("iret");
 	cpu.eip = swaddr_read(reg_l(R_ESP), 4, SS);
 	reg_l(R_ESP) += 4;
 	seg(CS).selector = (uint16_t)swaddr_read(reg_l(R_ESP), 4, SS);
@@ -11,7 +12,6 @@ make_helper(iret)
 	reg_l(R_ESP) += 4;
 	cpu.eflags = swaddr_read(reg_l(R_ESP), 4, SS);
 	reg_l(R_ESP) += 4;
-	print_asm("iret");
 	longjmp(jbuf, 1);
 	return 0;
 }
