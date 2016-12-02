@@ -27,7 +27,7 @@ void create_video_mapping() {
 		(get_updir() + dir)->val = make_pde(va_to_pa(pt));
 		pt[page].val = make_pte(addr);
 		pt[page].present = 1;
-		addr += 4096;
+		//addr += 4096;
 	}
 }
 
