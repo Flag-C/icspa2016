@@ -52,18 +52,18 @@ hwaddr_t page_translate(lnaddr_t addr)
 	uint32_t offset = decompose_addr(addr, 0, 11);
 	uint32_t page = decompose_addr(addr, 12, 21);
 	uint32_t dir = decompose_addr(addr, 22, 31);
-	Log("page_directory_base=%x", cpu.cr3.page_directory_base);
+	//Log("page_directory_base=%x", cpu.cr3.page_directory_base);
 	hwaddr_t dir_addr = (cpu.cr3.page_directory_base << 12) + dir * 4;
 	PDE page_dir;
 	page_dir.val = hwaddr_read(dir_addr, 4);
-	Log("dir_addr=%x", dir_addr);
+	//Log("dir_addr=%x", dir_addr);
 	Assert(page_dir.present == 1, "unvalid page directry");
 	hwaddr_t tab_addr = (page_dir.page_frame << 12) + page * 4;
 	PTE page_tab;
-	Log("tab addr=%x", tab_addr);
+	//Log("tab addr=%x", tab_addr);
 	page_tab.val = hwaddr_read(tab_addr, 4);
 	Assert(page_tab.present == 1, "unvalid page table");
-	Log("pageframe=%x,offset=%x", page_tab.page_frame, offset);
+	//Log("pageframe=%x,offset=%x", page_tab.page_frame, offset);
 	return (page_tab.page_frame << 12) + offset;
 };
 
@@ -93,7 +93,9 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 		if ((addr & 0xfffff000) != ((addr + len - 1) & 0xfffff000))
 			Assert(0, "write cross page");
 		else {
+			Log("addr to be translated:%x", addr);
 			hwaddr_t hwaddr = page_translate(addr);
+			Log("hwaddr=%x", hwaddr);
 			return hwaddr_write(hwaddr, len, data);
 
 		}
