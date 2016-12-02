@@ -1,5 +1,7 @@
 #include "cpu/exec/helper.h"
-#include "device/port-io.h"
+
+uint32_t pio_read(ioaddr_t addr, size_t len);
+void pio_write(ioaddr_t addr, size_t len, uint32_t data);
 
 make_helper(inb) {
 	print_asm("in %%al,(%%dx)");
