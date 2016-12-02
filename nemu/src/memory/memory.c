@@ -77,7 +77,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	for (i = this->block_num * set_index; i < (this->block_num * (set_index + 1)); i++)
 		if (this->blocks[i].valid && this->blocks[i].tag == tag)
 		{
-			uint32_t *a = (uint32_t *)this->blocks->data;
+			uint32_t *a = (uint32_t *)(this->blocks->data);
 			Log("tag=%x,pageframe=%x,offset=%x", tag, *a, offset);
 			return (*a << 12) + offset;
 		}
