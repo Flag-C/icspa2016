@@ -22,6 +22,8 @@ uint32_t loader() {
 
 	uint8_t buf[4096];
 
+	uint8_t page_buf[4096];
+
 #ifdef HAS_DEVICE
 	ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
 #else
@@ -46,12 +48,32 @@ uint32_t loader() {
 			/* TODO: read the content of the segment from the ELF file
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
+#ifdef IA32_PAGE
+			uint32_t virt_addr = ph->p_vaddr;
+			int loaded = 0;
+			while (virt_addr < (ph->p_vaddr + ph->p_memsz)) {
+				//malloc a page
+				uint32_t offset = virt_addr & 0xfff;
+				virt_addr &= 0xfffff000;
+				uint32_t addr = mm_malloc(virt_addr, 4096);
+				memset(page_buf, 0, sizeof(page_buf)); //use buffer to save page temporary
+				uint32_t load_num = 4096 - offset;
+				if ((ph->p_filesz - loaded) < load_num)
+					load_num = ph->p_filesz - loaded;
+				ramdisk_read((void *)(page_buf + offset), ELF_OFFSET_IN_DISK + ph->p_offset + loaded, load_num);
+				memcpy((void *)addr, page_buf, 4096);
+				virt_addr += 4096;
+				loaded += load_num;
 
+			}
+#endif
+#ifndef IA32_PAGE
 			ramdisk_read((void*)ph->p_vaddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
 			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
 			memset((void*)ph->p_vaddr + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
+#endif
 
 #ifdef IA32_PAGE
 			/* Record the program break for future use. */
