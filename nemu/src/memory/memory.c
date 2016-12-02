@@ -49,7 +49,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 
 hwaddr_t page_translate(lnaddr_t addr)
 {
-	uint32_t offset = decompose_addr(addr, 0, 12);
+	uint32_t offset = decompose_addr(addr, 0, 11);
 	uint32_t page = decompose_addr(addr, 12, 21);
 	uint32_t dir = decompose_addr(addr, 22, 31);
 	Log("page_directory_base=%x", cpu.cr3.page_directory_base);
