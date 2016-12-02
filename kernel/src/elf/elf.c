@@ -69,13 +69,9 @@ uint32_t loader() {
 
 			}
 #endif
-#ifndef IA32_PAGE
 
-#ifndef HAS_DEVICE
+#ifndef IA32_PAGE
 			ramdisk_read((void*)ph->p_vaddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
-#else
-			ide_read((void*)ph->p_vaddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
-#endif
 			/* TODO: zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
