@@ -7,7 +7,7 @@
 
 /* Use the function to get the start address of user page directory. */
 PDE* get_updir();
-static PTE kptable[1][NR_PTE] align_to_page;
+static PTE uptable[NR_PTE] align_to_page;
 
 void create_video_mapping() {
 	/* TODO: create an identical mapping from virtual memory area
@@ -23,7 +23,7 @@ void create_video_mapping() {
 	{
 		uint32_t dir = 0x3ff & (addr >> 22);
 		uint32_t page = 0x3ff & (addr >> 12);
-		PTE *pt = kptable[0];
+		PTE *pt = uptable;
 		(get_updir() + dir)->val = make_pde(va_to_pa(pt));
 		pt[page].val = make_pte(addr);
 		addr += 4096;
