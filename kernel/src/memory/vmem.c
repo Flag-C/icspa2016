@@ -7,20 +7,22 @@
 
 /* Use the function to get the start address of user page directory. */
 PDE* get_updir();
+PDE* get_kpdir();
 
 void create_video_mapping() {
-	/* TODO: create an identical mapping from virtual memory area 
-	 * [0xa0000, 0xa0000 + SCR_SIZE) to physical memory area 
+	/* TODO: create an identical mapping from virtual memory area
+	 * [0xa0000, 0xa0000 + SCR_SIZE) to physical memory area
 	 * [0xa0000, 0xa0000 + SCR_SIZE) for user program. You may define
 	 * some page tables to create this mapping.
 	 */
-	panic("please implement me");
+	//panic("please implement me");
+	memcpy(get_updir(), get_kpdir(), sizeof(PDE));
 }
 
 void video_mapping_write_test() {
 	int i;
 	uint32_t *buf = (void *)VMEM_ADDR;
-	for(i = 0; i < SCR_SIZE / 4; i ++) {
+	for (i = 0; i < SCR_SIZE / 4; i ++) {
 		buf[i] = i;
 	}
 }
@@ -28,7 +30,7 @@ void video_mapping_write_test() {
 void video_mapping_read_test() {
 	int i;
 	uint32_t *buf = (void *)VMEM_ADDR;
-	for(i = 0; i < SCR_SIZE / 4; i ++) {
+	for (i = 0; i < SCR_SIZE / 4; i ++) {
 		assert(buf[i] == i);
 	}
 }

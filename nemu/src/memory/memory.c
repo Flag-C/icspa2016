@@ -128,7 +128,6 @@ uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
-	//Assert(addr != 0, "addr==0!!");
 	lnaddr_t lnaddr = seg_translate(addr, sreg);
 	return lnaddr_read(lnaddr, len);
 }
@@ -137,7 +136,6 @@ void swaddr_write(swaddr_t addr, size_t len, uint32_t data, uint8_t sreg) {
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
-	//Assert(addr != 0, "addr==0!!");
 	lnaddr_t lnaddr = seg_translate(addr, sreg);
 	lnaddr_write(lnaddr, len, data);
 }
