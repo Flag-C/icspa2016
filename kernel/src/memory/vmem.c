@@ -17,9 +17,9 @@ void create_video_mapping() {
 	 */
 	//panic("please implement me");
 	uint32_t addr = VMEM_ADDR;
-	int pages = SCR_SIZE / 4096 + 1;
+	int pages = SCR_SIZE / 4096;
 	int i;
-	for (i = 0; i < pages; i++)
+	for (i = 0; i <= pages; i++)
 	{
 		uint32_t dir = 0x3ff & (addr >> 22);
 		uint32_t page = 0x3ff & (addr >> 12);
