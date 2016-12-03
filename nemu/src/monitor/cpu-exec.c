@@ -82,7 +82,7 @@ void cpu_exec(volatile uint32_t n) {
 		extern void device_update();
 		extern uint8_t i8259_query_intr();
 		extern void i8259_ack_intr();
-		extern void raise_intr(uint8_t NO);
+		extern void raise_intr(uint8_t NO, uint32_t eip);
 		device_update();
 		if (cpu.INTR & cpu.IF)	{
 			uint32_t intr_no = i8259_query_intr();
