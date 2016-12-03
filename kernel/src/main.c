@@ -74,13 +74,13 @@ void init_cond() {
 	 */
 	Log("Hello, NEMU world!");
 
+	/* Load the program. */
+	uint32_t eip = loader();
 #if defined(IA32_PAGE) && defined(HAS_DEVICE)
 	/* Write some test data to the video memory. */
 	video_mapping_write_test();
 #endif
 
-	/* Load the program. */
-	uint32_t eip = loader();
 
 #if defined(IA32_PAGE) && defined(HAS_DEVICE)
 	/* Read data in the video memory to check whether
