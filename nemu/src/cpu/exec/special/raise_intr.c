@@ -3,7 +3,13 @@
 #include "../../lib-common/x86-inc/mmu.h"
 extern jmp_buf jbuf;
 
-void raise_intr(uint8_t NO) {
+void raise_intr(uint8_t NO, uint32_t eip) {
+	reg_l(R_ESP) -= 4;
+	swaddr_write(reg_l(R_ESP), 4, (uint32_t)cpu.eflags, SS);
+	reg_l(R_ESP) -= 4;
+	swaddr_write(reg_l(R_ESP), 4, (uint32_t)seg(CS).selector, SS);
+	reg_l(R_ESP) -= 4;
+	swaddr_write(reg_l(R_ESP), 4, (uint32_t)(eip), SS);
 	lnaddr_t dis_addr = (lnaddr_t)cpu.idtr.base_addr + (NO << 3);
 	GateDesc descriptor;
 	uint32_t *tmp = (uint32_t *)&descriptor;
