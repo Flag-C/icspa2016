@@ -58,9 +58,9 @@ void init_cond() {
 	/* Initialize the IDE driver. */
 	init_ide();
 
+	Log("TEST");
 	/* Enable interrupts. */
 	sti();
-	Log("TEST");
 #endif
 
 #ifdef IA32_PAGE
