@@ -17,15 +17,15 @@ static int key_state[NR_KEYS];
 void
 keyboard_event(void) {
 	/* TODO: Fetch the scancode and update the key states. */
-	int code = (unsigned) in_byte(I8042_DATA_PORT);
 	/*
+	int code = (unsigned) in_byte(I8042_DATA_PORT);
 	int index;
 	for (index = 0; index < NR_KEYS; index++)
 		if (keycode_array[index] == code) break;
 	if (index >= NR_KEYS && code != 0x80)
-	*/
+
 	Log("no such key code = %x\n", code);
-	/*
+
 	else
 	{
 		if (code == 0x80)
@@ -44,7 +44,7 @@ keyboard_event(void) {
 		}
 	}
 	`*/
-	//assert(0);
+	assert(0);
 }
 
 static inline int
@@ -81,7 +81,7 @@ process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int))
 	 * If no such key is found, the function return false.
 	 * Remember to enable interrupts before returning from the function.
 	 */
-	//assert(0);
+	assert(0);
 	sti();
 	return false;
 }
