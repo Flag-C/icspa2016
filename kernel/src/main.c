@@ -59,9 +59,9 @@ void init_cond() {
 	init_ide();
 
 	/* Enable interrupts. */
+	Log("TEST");
 	sti();
 
-	Log("TEST");
 #endif
 
 #ifdef IA32_PAGE
