@@ -60,11 +60,11 @@ void init_cond() {
 
 	/* Enable interrupts. */
 	sti();
+	Log("TEST");
 #endif
 
 #ifdef IA32_PAGE
 	/* Initialize the memory manager. */
-	Log("TEST");
 	init_mm();
 #endif
 
