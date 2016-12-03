@@ -5,11 +5,11 @@
 
 #define ELF_OFFSET_IN_DISK 0
 
-#ifdef HAS_DEVICE
-void ide_read(uint8_t *, uint32_t, uint32_t);
-#else
+//#ifdef HAS_DEVICE
+//void ide_read(uint8_t *, uint32_t, uint32_t);
+//#else
 void ramdisk_read(uint8_t *, uint32_t, uint32_t);
-#endif
+//#endif
 
 #define STACK_SIZE (1 << 20)
 
@@ -24,11 +24,11 @@ uint32_t loader() {
 
 	uint8_t page_buf[4096];
 
-#ifdef HAS_DEVICE
-	ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
-#else
+//#ifdef HAS_DEVICE
+	//ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
+//#else
 	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
-#endif
+//#endif
 
 	elf = (void*)buf;
 
@@ -60,9 +60,9 @@ uint32_t loader() {
 				uint32_t load_num = 4096 - offset;
 				if ((ph->p_filesz - loaded) < load_num)
 					load_num = ph->p_filesz - loaded;
-				//ramdisk_read((void *)(page_buf + offset), ELF_OFFSET_IN_DISK + ph->p_offset + loaded, load_num);
-				ide_read((void *)(page_buf + offset),
-				         ELF_OFFSET_IN_DISK + ph->p_offset + loaded, load_num);
+				ramdisk_read((void *)(page_buf + offset), ELF_OFFSET_IN_DISK + ph->p_offset + loaded, load_num);
+				//ide_read((void *)(page_buf + offset),
+				//ELF_OFFSET_IN_DISK + ph->p_offset + loaded, load_num);
 				memcpy((void *)addr, page_buf, 4096);
 				virt_addr += 4096;
 				loaded += load_num;
