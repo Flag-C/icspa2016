@@ -13,5 +13,5 @@ make_helper(iret)
 	cpu.eflags = swaddr_read(reg_l(R_ESP), 4, SS);
 	reg_l(R_ESP) += 4;
 	longjmp(jbuf, 1);
-	return 0;
+	return 1;
 }
