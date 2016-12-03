@@ -54,7 +54,7 @@ void init_cond() {
 
 	/* Initialize the serial port. After that, you can use printk() to output messages. */
 	init_serial();
-
+	Log("TEST");
 	/* Initialize the IDE driver. */
 	init_ide();
 
@@ -66,7 +66,6 @@ void init_cond() {
 #ifdef IA32_PAGE
 	/* Initialize the memory manager. */
 	init_mm();
-	Log("TEST");
 #endif
 
 	/* Output a welcome message.
