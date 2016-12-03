@@ -11,7 +11,7 @@ void raise_intr(uint8_t NO) {
 	tmp++;
 	*tmp = lnaddr_read( dis_addr + 4, 4);
 	uint32_t offset = descriptor.offset_15_0 + (descriptor.offset_31_16 << 16);
-	seg(CS).selector = descriptor.segment;
+	seg(CS).selector = (uint16_t)(descriptor.segment);
 	seg(CS).cache = false;
 	cpu.eip = offset;
 	longjmp(jbuf, 1);
