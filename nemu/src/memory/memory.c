@@ -114,7 +114,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	PDE page_dir;
 	page_dir.val = hwaddr_read(dir_addr, 4);
 	//Log("dir_addr=%x", dir_addr);
-	Assert(page_dir.present == 1, "unvalid page directry");
+	Assert(page_dir.present == 1, "unvalid page directry, addr to be translate=%x", addr);
 	hwaddr_t tab_addr = (page_dir.page_frame << 12) + page * 4;
 	PTE page_tab;
 	//Log("tab addr=%x", tab_addr);
