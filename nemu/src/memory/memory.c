@@ -36,7 +36,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 
 #ifdef HAS_DEVICE
 	if (is_mmio(addr) != -1) {
-		Log("hit io address, address=%x, io port=%x", addr, is_mmio(addr));
+		//Log("hit io address, address=%x, io port=%x", addr, is_mmio(addr));
 		return mmio_read(addr, len, is_mmio(addr));
 	}
 	else {
