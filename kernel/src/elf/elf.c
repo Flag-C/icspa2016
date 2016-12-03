@@ -45,7 +45,7 @@ uint32_t loader() {
 #ifndef HAS_DEVICE
 		ph = (void*)(elf->e_phoff + index * elf->e_phentsize);
 #else
-		ph = (void*)((uint32_t)buf + elf->e_phoff + index * elf->e_phentsize)
+		ph = (void*)((uint32_t)buf + elf->e_phoff + index * elf->e_phentsize);
 #endif
 		if (ph->p_type == PT_LOAD) {
 
