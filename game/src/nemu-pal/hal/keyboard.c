@@ -17,7 +17,34 @@ static int key_state[NR_KEYS];
 void
 keyboard_event(void) {
 	/* TODO: Fetch the scancode and update the key states. */
-	assert(0);
+	int code = (unsigned) in_byte(I8042_DATA_PORT);
+	/*
+	int index;
+	for (index = 0; index < NR_KEYS; index++)
+		if (keycode_array[index] == code) break;
+	if (index >= NR_KEYS && code != 0x80)
+	*/
+	printf("no such key code = %x\n", code);
+	/*
+	else
+	{
+		if (code == 0x80)
+		{
+			int i;
+			for (i = 0; i < NR_KEYS; i++)
+				if (key_state[i] == KEY_STATE_WAIT_RELEASE)
+					key_state[i] = KEY_STATE_RELEASE;
+		}
+		else
+		{
+			for (i = 0; i < NR_KEYS; i++)
+				if (key_state[i] == KEY_STATE_WAIT_RELEASE)
+					key_state[i]=KEY_STATE_PRESS;
+			key_state[index]=KEY_STATE_WAIT_RELEASE;
+		}
+	}
+	`*/
+	//assert(0);
 }
 
 static inline int
@@ -44,7 +71,7 @@ clear_key(int index) {
 	key_state[index] = KEY_STATE_EMPTY;
 }
 
-bool 
+bool
 process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int)) {
 	cli();
 	/* TODO: Traverse the key states. Find a key just pressed or released.
@@ -54,7 +81,6 @@ process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int))
 	 * If no such key is found, the function return false.
 	 * Remember to enable interrupts before returning from the function.
 	 */
-
 	assert(0);
 	sti();
 	return false;
