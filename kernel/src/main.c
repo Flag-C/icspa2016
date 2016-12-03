@@ -60,6 +60,7 @@ void init_cond() {
 
 	/* Enable interrupts. */
 	sti();
+
 	Log("TEST");
 #endif
 
