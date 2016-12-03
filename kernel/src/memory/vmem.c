@@ -6,7 +6,9 @@
 #define SCR_SIZE (320 * 200)
 
 /* Use the function to get the start address of user page directory. */
-PDE* get_updir();
+inline PDE* get_updir();
+inline PDE* get_kpdir();
+
 static PTE uptable[NR_PTE] align_to_page;
 
 void create_video_mapping() {
@@ -16,6 +18,7 @@ void create_video_mapping() {
 	 * some page tables to create this mapping.
 	 */
 	//panic("please implement me");
+	/*
 	uint32_t addr = VMEM_ADDR;
 	int pages = SCR_SIZE / 4096;
 	int i;
@@ -27,8 +30,12 @@ void create_video_mapping() {
 		(get_updir() + dir)->val = make_pde(va_to_pa(pt));
 		pt[page].val = make_pte(addr);
 		addr += 4096;
-	}
+		*/
+	PDE *kpdir = get_kpdir();
+	PDE *updir = get_updir();
+	memcpy(&updir[0], &kpdir[0], 1 * sizeof(PDE));
 }
+
 
 void video_mapping_write_test() {
 	int i;
