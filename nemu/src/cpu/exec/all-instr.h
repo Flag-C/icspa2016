@@ -84,6 +84,7 @@
 #include "logic/setp.h"
 #include "logic/sets.h"
 #include "logic/setz.h"
+#include "logic/bt.h"
 
 #include "string/rep.h"
 #include "string/lods.h"
