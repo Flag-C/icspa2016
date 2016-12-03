@@ -148,9 +148,8 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 			return data;
 		}
 		else {
-			//Log("addr to be translated:%x", addr);
 			hwaddr_t hwaddr = page_translate(addr);
-			//Log("hwaddr=%x", hwaddr);
+			Log("addr to be translated:%x, hwaddr=%x", addr, hwaddr);
 			return hwaddr_read(hwaddr, len);
 
 		}
