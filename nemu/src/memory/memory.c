@@ -62,7 +62,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 
 #ifdef HAS_DEVICE
 	if (is_mmio(addr) != -1) {
-		//Log("hit io address, address=%x, io port=%x", addr, is_mmio(addr));
+		Log("hit io address, address=%x, io port=%x", addr, is_mmio(addr));
 		return mmio_write(addr, len, data, is_mmio(addr));
 	} else {
 #endif
