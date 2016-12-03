@@ -57,7 +57,6 @@ void init_cond() {
 
 	/* Initialize the IDE driver. */
 	init_ide();
-	Log("TEST");
 
 	/* Enable interrupts. */
 	sti();
@@ -67,6 +66,7 @@ void init_cond() {
 	/* Initialize the memory manager. */
 	init_mm();
 #endif
+	Log("TEST");
 
 	/* Output a welcome message.
 	 * Note that the output is actually performed only when
