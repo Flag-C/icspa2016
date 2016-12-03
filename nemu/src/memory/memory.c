@@ -164,13 +164,14 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	{
 		if ((addr & 0xfffff000) != ((addr + len - 1) & 0xfffff000))
 		{
-			Log("write cross page");
 			lnaddr_t prev_page_addr = addr & 0xfffff000;
 			lnaddr_t sec_page_addr = (addr + len - 1) & 0xfffff000;
 			uint32_t prev_len = 4096 - (addr - prev_page_addr);
 			uint32_t sec_len = len - prev_len;
 			uint32_t data1 = (data << sec_len * 8) >> sec_len * 8;
 			uint32_t data2 = data >> prev_len * 8;
+			Log("write cross page,data=%x,data1=%x,len1=%x,addr1=%x,data2=%x,len2=%x,addr2=%x",
+			    data, data1, prev_len, prev_page_addr, data2, sec_len, sec_page_addr);
 			hwaddr_write(addr, prev_len, data1);
 			return hwaddr_write(sec_page_addr, sec_len, data2);
 		}
