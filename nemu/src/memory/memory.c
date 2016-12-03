@@ -5,7 +5,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define CACHED
+//#define CACHED
 //#define DEBUGGING
 
 static Cache TLB;
