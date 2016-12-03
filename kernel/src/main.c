@@ -61,7 +61,7 @@ void init_cond() {
 	/* Enable interrupts. */
 	sti();
 
-	//Log("TEST");
+	Log("TEST");
 #endif
 
 #ifdef IA32_PAGE
