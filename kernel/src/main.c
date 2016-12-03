@@ -65,8 +65,8 @@ void init_cond() {
 #ifdef IA32_PAGE
 	/* Initialize the memory manager. */
 	init_mm();
-#endif
 	Log("TEST");
+#endif
 
 	/* Output a welcome message.
 	 * Note that the output is actually performed only when
