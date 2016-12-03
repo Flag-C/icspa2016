@@ -109,7 +109,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 
 	uint32_t page = decompose_addr(addr, 12, 21);
 	uint32_t dir = decompose_addr(addr, 22, 31);
-	Log("page_directory_base=%x", cpu.cr3.page_directory_base);
+	//Log("page_directory_base=%x", cpu.cr3.page_directory_base);
 	hwaddr_t dir_addr = (cpu.cr3.page_directory_base << 12) + dir * 4;
 	PDE page_dir;
 	page_dir.val = hwaddr_read(dir_addr, 4);
@@ -149,7 +149,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 		}
 		else {
 			hwaddr_t hwaddr = page_translate(addr);
-			Log("addr to be translated:%x, hwaddr=%x, data=%x", addr, hwaddr, hwaddr_read(hwaddr, len));
+			//Log("addr to be translated:%x, hwaddr=%x, data=%x", addr, hwaddr, hwaddr_read(hwaddr, len));
 			return hwaddr_read(hwaddr, len);
 
 		}
