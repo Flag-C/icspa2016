@@ -143,8 +143,8 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 			uint32_t data1 = hwaddr_read(page_translate(addr), prev_len);
 			uint32_t data2 = hwaddr_read(page_translate(sec_page_addr), sec_len);
 			uint32_t data = (data2 << 8 * prev_len) + data1;
-			Log("read cross page,lnaddr=%x,hwaddr1=%x,hwaddr2=%x,data1=%x,data2=%x,data=%x,len1=%x,len2=%x",
-			    addr, page_translate(addr), page_translate(sec_page_addr), data1, data2, data, prev_len, sec_len);
+			//Log("read cross page,lnaddr=%x,hwaddr1=%x,hwaddr2=%x,data1=%x,data2=%x,data=%x,len1=%x,len2=%x",
+			//addr, page_translate(addr), page_translate(sec_page_addr), data1, data2, data, prev_len, sec_len);
 			return data;
 		}
 		else {
@@ -170,8 +170,8 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 			uint32_t sec_len = len - prev_len;
 			uint32_t data1 = (data << sec_len * 8) >> sec_len * 8;
 			uint32_t data2 = data >> prev_len * 8;
-			Log("write cross page,data=%x,data1=%x,len1=%x,addr1=%x,data2=%x,len2=%x,addr2=%x",
-			    data, data1, prev_len, addr, data2, sec_len, sec_page_addr);
+			//Log("write cross page,data=%x,data1=%x,len1=%x,addr1=%x,data2=%x,len2=%x,addr2=%x",
+			//data, data1, prev_len, addr, data2, sec_len, sec_page_addr);
 			hwaddr_write(page_translate(addr), prev_len, data1);
 			return hwaddr_write(page_translate(sec_page_addr), sec_len, data2);
 		}
