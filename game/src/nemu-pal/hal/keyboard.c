@@ -24,7 +24,7 @@ keyboard_event(void) {
 		if (keycode_array[index] == code) break;
 	if (index >= NR_KEYS && code != 0x80)
 	*/
-	printf("no such key code = %x\n", code);
+	Log("no such key code = %x\n", code);
 	/*
 	else
 	{
