@@ -42,7 +42,11 @@ uint32_t loader() {
 	int index;
 	for (index = 0; index < elf->e_phnum; index++ ) {
 		/* Scan the program header table, load each segment into memory */
-		ph = (void*)elf->e_phoff + index * elf->e_phentsize;
+#ifndef HAS_DEVICE
+		ph = (void*)(elf->e_phoff + index * elf->e_phentsize);
+#else
+		ph = (void*)((uint32_t)buf + elf->e_phoff + index * elf->e_phentsize)
+#endif
 		if (ph->p_type == PT_LOAD) {
 
 			/* TODO: read the content of the segment from the ELF file

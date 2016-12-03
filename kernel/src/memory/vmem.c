@@ -18,7 +18,7 @@ void create_video_mapping() {
 	 * some page tables to create this mapping.
 	 */
 	//panic("please implement me");
-	/*
+
 	uint32_t addr = VMEM_ADDR;
 	int pages = SCR_SIZE / 4096;
 	int i;
@@ -30,10 +30,7 @@ void create_video_mapping() {
 		(get_updir() + dir)->val = make_pde(va_to_pa(pt));
 		pt[page].val = make_pte(addr);
 		addr += 4096;
-		*/
-	PDE *kpdir = get_kpdir();
-	PDE *updir = get_updir();
-	memcpy(&updir[0], &kpdir[0], 1 * sizeof(PDE));
+	}
 }
 
 
