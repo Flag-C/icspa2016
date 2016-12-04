@@ -392,7 +392,7 @@ PAL_InitFont(
   //
   Log("hit");
   gpFont->lpBufChar = (LPWORD)calloc(gpFont->nChar, sizeof(WORD));
-  Log("leave");
+  Log("leave,%x", gpFont->nChar);
   if (gpFont->lpBufChar == NULL)
   {
     free(gpFont);
