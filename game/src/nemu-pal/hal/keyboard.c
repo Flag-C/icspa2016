@@ -77,12 +77,14 @@ process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int))
 	for (i = 0; i < NR_KEYS; i++)
 		if (query_key(i) == KEY_STATE_PRESS)
 		{
+			Log("key %x pressed", i);
 			key_press_callback(i);
 			key_state[i] = KEY_STATE_WAIT_RELEASE;
 			flag = true;
 		}
 		else if (query_key(i) == KEY_STATE_RELEASE)
 		{
+			Log("key %x released", i);
 			key_release_callback(i);
 			clear_key(i);
 			flag = true;
