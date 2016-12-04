@@ -384,9 +384,7 @@ PAL_InitFont(
   // Get the size of wor16.asc file.
   //
   fseek(fp, 0, SEEK_END);
-  Log("hit");
   gpFont->nChar = ftell(fp);
-  Log("finished");
   gpFont->nChar /= 2;
 
   //
