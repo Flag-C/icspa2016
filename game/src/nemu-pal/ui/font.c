@@ -378,14 +378,14 @@ PAL_InitFont(
   //
   // Load the wor16.asc file.
   //
-  Log("hit calloc");
   fp = UTIL_OpenRequiredFile("wor16.asc");
-  Log("calloc finished");
 
   //
   // Get the size of wor16.asc file.
   //
+  Log("hit");
   fseek(fp, 0, SEEK_END);
+  Log("finished");
   gpFont->nChar = ftell(fp);
   gpFont->nChar /= 2;
 
