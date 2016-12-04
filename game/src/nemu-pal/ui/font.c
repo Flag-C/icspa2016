@@ -369,9 +369,7 @@ PAL_InitFont(
     //
     return 0;
   }
-  Log("hit calloc");
   gpFont = (LPFONT)calloc(1, sizeof(FONT));
-  Log("calloc finished");
   if (gpFont == NULL)
   {
     return -1;
@@ -380,7 +378,9 @@ PAL_InitFont(
   //
   // Load the wor16.asc file.
   //
+  Log("hit calloc");
   fp = UTIL_OpenRequiredFile("wor16.asc");
+  Log("calloc finished");
 
   //
   // Get the size of wor16.asc file.
