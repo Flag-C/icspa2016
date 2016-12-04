@@ -409,8 +409,9 @@ PAL_InitFont(
   //
   // Read all bitmaps from wor16.fon file.
   //
+  Log("hit");
   fp = UTIL_OpenRequiredFile("wor16.fon");
-
+  Log("leave");
   gpFont->lpBufGlyph = (LPBYTE)calloc(gpFont->nChar, 30);
   if (gpFont->lpBufGlyph == NULL)
   {
