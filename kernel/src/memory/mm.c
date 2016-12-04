@@ -16,9 +16,10 @@ uint32_t max_brk = 0;
 
 /* The brk() system call handler. */
 uint32_t mm_brk(uint32_t new_brk) {
-	if(new_brk != 0) {
-		if(new_brk > max_brk) {
+	if (new_brk != 0) {
+		if (new_brk > max_brk) {
 #ifdef IA32_PAGE
+			Log("hit,mm_malloc(%x,%x),max_brk, new_brk - max_brk");
 			mm_malloc(max_brk, new_brk - max_brk);
 #endif
 			max_brk = new_brk;
@@ -40,8 +41,8 @@ void init_mm() {
 	memset(updir, 0, NR_PDE * sizeof(PDE));
 
 	/* create the same mapping above 0xc0000000 as the kernel mapping does */
-	memcpy(&updir[KOFFSET / PT_SIZE], &kpdir[KOFFSET / PT_SIZE], 
-			(PHY_MEM / PT_SIZE) * sizeof(PDE));
+	memcpy(&updir[KOFFSET / PT_SIZE], &kpdir[KOFFSET / PT_SIZE],
+	       (PHY_MEM / PT_SIZE) * sizeof(PDE));
 
 	ucr3.val = (uint32_t)va_to_pa((uint32_t)updir) & ~0xfff;
 }
