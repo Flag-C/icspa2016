@@ -19,7 +19,7 @@ uint32_t mm_brk(uint32_t new_brk) {
 	if (new_brk != 0) {
 		if (new_brk > max_brk) {
 #ifdef IA32_PAGE
-			Log("hit,mm_malloc(%x,%x)", max_brk, new_brk - max_brk);
+			//Log("hit,mm_malloc(%x,%x)", max_brk, new_brk - max_brk);
 			mm_malloc(max_brk, new_brk - max_brk);
 #endif
 			max_brk = new_brk;
