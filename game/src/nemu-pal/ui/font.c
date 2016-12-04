@@ -422,10 +422,10 @@ PAL_InitFont(
   //
   // The font glyph data begins at offset 0x682 in wor16.fon.
   //
-  fseek(fp, 0x682, SEEK_SET);
   Log("hit");
-  fread(gpFont->lpBufGlyph, 30, gpFont->nChar, fp);
+  fseek(fp, 0x682, SEEK_SET);
   Log("leave");
+  fread(gpFont->lpBufGlyph, 30, gpFont->nChar, fp);
   fclose(fp);
 
   return 0;
