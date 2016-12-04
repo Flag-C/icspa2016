@@ -21,6 +21,7 @@
 #include "data-mov/cmovp.h"
 #include "data-mov/cmovs.h"
 #include "data-mov/cmovz.h"
+#include "data-mov/cbw.h"
 
 #include "control/call.h"
 #include "control/push.h"
