@@ -50,7 +50,7 @@ keyboard_event(void) {
 	{
 		int i;
 		for (i = 0; i < NR_KEYS; i++)
-			if (key_state[i] == KEY_STATE_PRESS)
+			if (key_state[i] == KEY_STATE_WAIT_RELEASE)
 				release_key(i);
 	}
 	else
