@@ -90,7 +90,6 @@ int fs_write(int fd, void *buf, int len)
 {
 	assert(fd < FILE_END);
 	assert(len >= 0);
-	assert(file_state[fd].opened);
 	if (fd == 1 || fd == 2) {
 		int i;
 		for (i = 0; i < len; i++)
