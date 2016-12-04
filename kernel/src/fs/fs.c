@@ -119,8 +119,8 @@ int fs_lseek(int fd, int offset, int whence)
 		set_offset = file_state[fd].offset + offset;
 		break;
 	case SEEK_END:
-		Log("hit SEEK_END");
-		set_offset = FILE_TABLE(fd).disk_offset + offset;
+		Log("hit SEEK");
+		set_offset = FILE_TABLE(fd).size + offset;
 		break;
 	default: assert(0);
 	}
