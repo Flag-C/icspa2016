@@ -60,7 +60,7 @@ void do_syscall(TrapFrame *tf) {
 		tf->eax = fs_write(tf->ebx, (void *)tf->ecx, tf->edx);
 		break;
 	case SYS_read:
-		tf->eax = fs_read(tf->ebx, (void)tf->ecx, tf->edx);
+		tf->eax = fs_read(tf->ebx, (void *)tf->ecx, tf->edx);
 		break;
 	case SYS_open:
 		tf->eax = fs_open((const char *)tf->ebx, tf->ecx);
