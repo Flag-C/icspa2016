@@ -371,6 +371,7 @@ PAL_InitFont(
   }
   Log("hit calloc");
   gpFont = (LPFONT)calloc(1, sizeof(FONT));
+  Log("calloc finished");
   if (gpFont == NULL)
   {
     return -1;
