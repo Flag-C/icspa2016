@@ -40,7 +40,7 @@ clear_key(int index) {
 void
 keyboard_event(void) {
 	/* TODO: Fetch the scancode and update the key states. */
-	int code = in_byte(0x60);
+	uint32_t code = in_byte(0x60);
 	Log("hit keyboard, code=%x", code);
 	int index;
 	for (index = 0; index < NR_KEYS; index++)
