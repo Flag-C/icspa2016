@@ -391,7 +391,7 @@ PAL_InitFont(
   // Read all the character codes.
   //
   Log("hit");
-  gpFont->lpBufChar = (LPWORD)malloc(sizeof(WORD));
+  gpFont->lpBufChar = (LPWORD)calloc(gpFont->nChar, sizeof(WORD));
   Log("leave");
   if (gpFont->lpBufChar == NULL)
   {
