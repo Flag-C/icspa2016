@@ -61,6 +61,7 @@ int fs_open(const char *pathname, int flags)
 			return i;
 		}
 	assert(0);
+	return -1;
 }
 
 int fs_close(int fd)
@@ -109,7 +110,7 @@ int fs_write(int fd, void *buf, int len)
 int fs_lseek(int fd, int offset, int whence)
 {
 	assert((fd >= FILE_START) && (fd < FILE_END));
-	int set_offset;
+	int set_offset = 0;
 	switch (whence)
 	{
 	case SEEK_SET:
