@@ -390,9 +390,9 @@ PAL_InitFont(
   //
   // Read all the character codes.
   //
-  Log("hit");
+  //Log("hit");
   gpFont->lpBufChar = (LPWORD)calloc(gpFont->nChar, sizeof(WORD));
-  Log("leave,%x", gpFont->nChar);
+  //Log("leave,%x", gpFont->nChar);
   if (gpFont->lpBufChar == NULL)
   {
     free(gpFont);
