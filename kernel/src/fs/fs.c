@@ -1,5 +1,6 @@
 #include "common.h"
 #include <sys/ioctl.h>
+#include "string.h"
 
 typedef struct {
 	char *name;
@@ -38,3 +39,90 @@ void ide_write(uint8_t *, uint32_t, uint32_t);
 
 /* TODO: implement a simplified file system here. */
 
+typedef struct {
+	bool opened;
+	uint32_t offset;
+} Fstate;
+
+#define FILE_START 3
+#define FILE_END (NR_FILES+3)
+#define FILE_TABLE(fd) file_table[(fd) - FILE_START]
+
+static Fstate file_state[NR_FILES + 3];
+
+int fs_open(const char *pathname, int flags)
+{
+	int i;
+	for (i = FILE_START; i < FILE_END; i++)
+		if (strcmp(FILE_TABLE(i).name, pathname) == 0)
+		{
+			file_state[i].opened = true;
+			file_state[i].offset = 0;
+			return i;
+		}
+	assert(0);
+}
+
+int fs_close(int fd)
+{
+	assert((fd >= FILE_START) && (fd < FILE_END));
+	file_state[fd].opened = false;
+	file_state[fd].offset = 0;
+	return 0;
+}
+
+int fs_read(int fd, void *buf, int len)
+{
+	assert((fd >= FILE_START) && (fd < FILE_END));
+	assert(len >= 0);
+	assert(file_state[fd].opened);
+	int n = (len < (FILE_TABLE(fd).size - file_state[fd].offset)) ?
+	        len : (FILE_TABLE(fd).size - file_state[fd].offset);
+	ide_read(buf, FILE_TABLE(fd).disk_offset + file_state[fd].offset, n);
+	file_state[fd].offset += n;
+	return n;
+}
+
+extern void serial_printc(char);
+
+int fs_write(int fd, void *buf, int len)
+{
+	assert(fd < FILE_END);
+	assert(len >= 0);
+	assert(file_state[fd].opened);
+	if (fd == 1 || fd == 2) {
+		int i;
+		for (i = 0; i < len; i++)
+			serial_printc(*(char*)(buf + i));
+		return len;
+	}
+	else
+	{
+		int n = (len < (FILE_TABLE(fd).size - file_state[fd].offset)) ?
+		        len : (FILE_TABLE(fd).size - file_state[fd].offset);
+		ide_write(buf, FILE_TABLE(fd).disk_offset + file_state[fd].offset, n);
+		file_state[fd].offset += n;
+		return n;
+	}
+}
+
+int fs_lseek(int fd, int offset, int whence)
+{
+	assert((fd >= FILE_START) && (fd < FILE_END));
+	int set_offset;
+	switch (whence)
+	{
+	case SEEK_SET:
+		set_offset = offset;
+		break;
+	case SEEK_CUR:
+		set_offset = file_state[fd].offset + offset;
+		break;
+	case SEEK_END:
+		set_offset = FILE_TABLE(fd).disk_offset + offset;
+		break;
+	default: assert(0);
+	}
+	file_state[fd].offset = set_offset;
+	return set_offset;
+}

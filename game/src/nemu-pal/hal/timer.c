@@ -17,7 +17,7 @@ get_fps() {
 void
 timer_event(void) {
 	jiffy ++;
-	if(jiffy % (HZ / 2) == 0) {
+	if (jiffy % (HZ / 2) == 0) {
 		fps = nr_draw * 2 + 1;
 		nr_draw = 0;
 	}
@@ -25,11 +25,12 @@ timer_event(void) {
 
 uint32_t SDL_GetTicks() {
 	/* TODO: Return the time in millisecond. */
-	assert(0);
-	return 0;
+	return jiffy;
 }
 
 void SDL_Delay(uint32_t ms) {
 	/* TODO: Return from this function after waiting for `ms' milliseconds. */
-	assert(0);
+	uint32_t tmp = jiffy;
+	while ((jiffy - tmp) < ms);
+	return;
 }

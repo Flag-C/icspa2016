@@ -13,40 +13,6 @@ static const int keycode_array[] = {
 };
 
 static int key_state[NR_KEYS];
-
-void
-keyboard_event(void) {
-	/* TODO: Fetch the scancode and update the key states. */
-	/*
-	int code = (unsigned) in_byte(I8042_DATA_PORT);
-	int index;
-	for (index = 0; index < NR_KEYS; index++)
-		if (keycode_array[index] == code) break;
-	if (index >= NR_KEYS && code != 0x80)
-
-	Log("no such key code = %x\n", code);
-
-	else
-	{
-		if (code == 0x80)
-		{
-			int i;
-			for (i = 0; i < NR_KEYS; i++)
-				if (key_state[i] == KEY_STATE_WAIT_RELEASE)
-					key_state[i] = KEY_STATE_RELEASE;
-		}
-		else
-		{
-			for (i = 0; i < NR_KEYS; i++)
-				if (key_state[i] == KEY_STATE_WAIT_RELEASE)
-					key_state[i]=KEY_STATE_PRESS;
-			key_state[index]=KEY_STATE_WAIT_RELEASE;
-		}
-	}
-	`*/
-	assert(0);
-}
-
 static inline int
 get_keycode(int index) {
 	assert(index >= 0 && index < NR_KEYS);
@@ -62,7 +28,7 @@ query_key(int index) {
 static inline void
 release_key(int index) {
 	assert(index >= 0 && index < NR_KEYS);
-	key_state[index] = KEY_STATE_WAIT_RELEASE;
+	key_state[index] = KEY_STATE_RELEASE;
 }
 
 static inline void
@@ -70,6 +36,34 @@ clear_key(int index) {
 	assert(index >= 0 && index < NR_KEYS);
 	key_state[index] = KEY_STATE_EMPTY;
 }
+
+void
+keyboard_event(void) {
+	/* TODO: Fetch the scancode and update the key states. */
+
+	int code = (unsigned) in_byte(0x60);
+	int index;
+	for (index = 0; index < NR_KEYS; index++)
+		if (keycode_array[index] == code) break;
+	if (index >= NR_KEYS && code != 0x80)
+		return;
+	else
+	{
+		if (code == 0x80)
+		{
+			int i;
+			for (i = 0; i < NR_KEYS; i++)
+				if (key_state[i] == KEY_STATE_PRESS)
+					release_key(i);
+		}
+		else
+		{
+			if (query_key(index) == KEY_STATE_EMPTY)
+				key_state[index] = KEY_STATE_PRESS;
+		}
+	}
+}
+
 
 bool
 process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int)) {
@@ -81,7 +75,21 @@ process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int))
 	 * If no such key is found, the function return false.
 	 * Remember to enable interrupts before returning from the function.
 	 */
-	assert(0);
+	int i;
+	bool flag = false;
+	for (i = 0; i < NR_KEYS; i++)
+		if (query_key(i) == KEY_STATE_PRESS)
+		{
+			key_press_callback(i);
+			key_state[i] = KEY_STATE_WAIT_RELEASE;
+			flag = true;
+		}
+		else if (query_key(i) == KEY_STATE_RELEASE)
+		{
+			key_release_callback(i);
+			clear_key(i);
+			flag = true;
+		}
 	sti();
-	return false;
+	return flag;
 }
