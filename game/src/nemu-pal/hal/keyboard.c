@@ -41,7 +41,7 @@ void
 keyboard_event(void) {
 	/* TODO: Fetch the scancode and update the key states. */
 	uint32_t code = in_byte(0x60);
-	Log("hit keyboard, code=%x", code);
+	//Log("hit keyboard, code=%x", code);
 	int index;
 	for (index = 0; index < NR_KEYS; index++)
 		if (keycode_array[index] == code) break;
@@ -49,7 +49,7 @@ keyboard_event(void) {
 		return;
 	else
 	{
-		if (code == 0x80)
+		if (code >= 0x80)
 		{
 			int i;
 			for (i = 0; i < NR_KEYS; i++)
