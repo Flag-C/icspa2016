@@ -53,7 +53,7 @@ keyboard_event(void) {
 			if (key_state[i] == KEY_STATE_WAIT_RELEASE)
 				release_key(i);
 	}
-	else
+	else if (index < NR_KEYS)
 	{
 		if (query_key(index) == KEY_STATE_EMPTY)
 			key_state[index] = KEY_STATE_PRESS;
