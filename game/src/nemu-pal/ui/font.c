@@ -115,7 +115,7 @@ PAL_InitFont(
   fp = fopen(PAL_PREFIX "word.dat", "rb");
   if (!fp)
   {
-    Log("cannot load");
+    //Log("cannot load");
     return 0;
   }
 
@@ -369,7 +369,7 @@ PAL_InitFont(
     //
     return 0;
   }
-
+  Log("hit calloc");
   gpFont = (LPFONT)calloc(1, sizeof(FONT));
   if (gpFont == NULL)
   {
