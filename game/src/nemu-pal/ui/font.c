@@ -410,7 +410,9 @@ PAL_InitFont(
   // Read all bitmaps from wor16.fon file.
   //
   fp = UTIL_OpenRequiredFile("wor16.fon");
+  Log("hit");
   gpFont->lpBufGlyph = (LPBYTE)calloc(gpFont->nChar, 30);
+  Log("leave");
   if (gpFont->lpBufGlyph == NULL)
   {
     free(gpFont->lpBufChar);
@@ -422,9 +424,7 @@ PAL_InitFont(
   //
   // The font glyph data begins at offset 0x682 in wor16.fon.
   //
-  Log("hit");
   fseek(fp, 0x682, SEEK_SET);
-  Log("leave");
   fread(gpFont->lpBufGlyph, 30, gpFont->nChar, fp);
   fclose(fp);
 
