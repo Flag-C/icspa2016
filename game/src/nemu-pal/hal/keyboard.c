@@ -45,23 +45,20 @@ keyboard_event(void) {
 	int index;
 	for (index = 0; index < NR_KEYS; index++)
 		if (keycode_array[index] == code) break;
-	if (index >= NR_KEYS && code != 0x80)
-		return;
+	Log("code=%x,index=%x", code, index);
+	if (code >= 0x80)
+	{
+		int i;
+		for (i = 0; i < NR_KEYS; i++)
+			if (key_state[i] == KEY_STATE_PRESS)
+				release_key(i);
+	}
 	else
 	{
-		if (code >= 0x80)
-		{
-			int i;
-			for (i = 0; i < NR_KEYS; i++)
-				if (key_state[i] == KEY_STATE_PRESS)
-					release_key(i);
-		}
-		else
-		{
-			if (query_key(index) == KEY_STATE_EMPTY)
-				key_state[index] = KEY_STATE_PRESS;
-		}
+		if (query_key(index) == KEY_STATE_EMPTY)
+			key_state[index] = KEY_STATE_PRESS;
 	}
+
 }
 
 
