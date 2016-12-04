@@ -45,7 +45,7 @@ keyboard_event(void) {
 	int index;
 	for (index = 0; index < NR_KEYS; index++)
 		if (keycode_array[index] == code) break;
-	Log("code=%x,index=%x", code, index);
+	//Log("code=%x,index=%x", code, index);
 	if (code >= 0x80)
 	{
 		int i;
@@ -78,14 +78,14 @@ process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int))
 		if (query_key(i) == KEY_STATE_PRESS)
 		{
 			//Log("key %x pressed", i);
-			key_press_callback(i);
+			key_press_callback(keycode_array[i]);
 			key_state[i] = KEY_STATE_WAIT_RELEASE;
 			flag = true;
 		}
 		else if (query_key(i) == KEY_STATE_RELEASE)
 		{
 			//Log("key %x released", i);
-			key_release_callback(i);
+			key_release_callback(keycode_array[i]);
 			clear_key(i);
 			flag = true;
 		}
