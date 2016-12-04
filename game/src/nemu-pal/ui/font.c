@@ -390,7 +390,9 @@ PAL_InitFont(
   //
   // Read all the character codes.
   //
+  Log("hit");
   gpFont->lpBufChar = (LPWORD)calloc(gpFont->nChar, sizeof(WORD));
+  Log("leave");
   if (gpFont->lpBufChar == NULL)
   {
     free(gpFont);
@@ -410,9 +412,7 @@ PAL_InitFont(
   // Read all bitmaps from wor16.fon file.
   //
   fp = UTIL_OpenRequiredFile("wor16.fon");
-  Log("hit");
   gpFont->lpBufGlyph = (LPBYTE)calloc(gpFont->nChar, 30);
-  Log("leave");
   if (gpFont->lpBufGlyph == NULL)
   {
     free(gpFont->lpBufChar);
